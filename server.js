@@ -1,26 +1,70 @@
 // server.js
 const express = require('express');
 const path = require('path');
-
-// Tạo instance app
+const mongoose = require('mongoose'); // Thêm mongoose
 const app = express();
-
-// Cấu hình cổng
 const PORT = 3000;
 
-// Cho phép Express parse dữ liệu JSON (nếu cần nhận dữ liệu POST dạng JSON)
-app.use(express.json());
-
-// Phục vụ file tĩnh trong thư mục "public"
-// => Bất kỳ file nào trong "public" sẽ truy cập được qua http://localhost:3000/<tên-file>
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Route test để kiểm tra server
-app.get('/hello', (req, res) => {
-  res.send('Xin chào! Server đã chạy OK!');
+// Kết nối MongoDB (myshop là tên DB)
+mongoose.connect('mongodb://localhost:27017/loosia', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Kết nối MongoDB thành công!');
+}).catch((err) => {
+  console.error('Kết nối MongoDB thất bại:', err);
 });
 
-// Khởi động server
+// Cho phép parse JSON
+app.use(express.json());
+
+// Phục vụ file tĩnh
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Định nghĩa Schema & Model
+const productSchema = new mongoose.Schema({
+  name: String,
+  price: Number
+});
+const Product = mongoose.model('Product', productSchema);
+
+// GET /api/products
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find(); // Lấy tất cả document
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// POST /api/products
+app.post('/api/products', async (req, res) => {
+  try {
+    const { name, price } = req.body;
+    const newProduct = new Product({ name, price });
+    await newProduct.save(); // Lưu vào DB
+    res.json({ success: true, product: newProduct });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// DELETE /api/products/:id
+app.delete('/api/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Product.findByIdAndDelete(id);
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// Khởi chạy server
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });

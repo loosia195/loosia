@@ -1,0 +1,78 @@
+<!-- public/admin.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - Quản lý sản phẩm</title>
+</head>
+<body>
+  <h1>Quản lý sản phẩm</h1>
+
+  <!-- Form thêm sản phẩm -->
+  <div style="margin-bottom: 16px;">
+    <input id="name" placeholder="Tên sản phẩm" />
+    <input id="price" placeholder="Giá" type="number" />
+    <button onclick="addProduct()">Thêm</button>
+  </div>
+
+  <!-- Danh sách sản phẩm -->
+  <div id="product-list"></div>
+
+  <script>
+    // Hàm tải danh sách sản phẩm
+    async function loadProducts() {
+      const res = await fetch('/api/products');  // Gọi GET /api/products
+      const products = await res.json();
+      const container = document.getElementById('product-list');
+
+      container.innerHTML = products.map(p => `
+        <div style="margin-bottom: 8px;">
+          <strong>${p.name}</strong> - ${p.price} đ
+          <button onclick="deleteProduct(${p.id})">Xoá</button>
+        </div>
+      `).join('');
+    }
+
+    // Hàm thêm sản phẩm
+    async function addProduct() {
+      const name = document.getElementById('name').value;
+      const price = document.getElementById('price').value;
+
+      if (!name || !price) {
+        alert("Vui lòng nhập tên và giá sản phẩm");
+        return;
+      }
+
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, price })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Thêm sản phẩm thành công!");
+        loadProducts(); // Reload danh sách
+        // Xoá nội dung input
+        document.getElementById('name').value = '';
+        document.getElementById('price').value = '';
+      }
+    }
+
+    // Hàm xoá sản phẩm
+    async function deleteProduct(id) {
+      if (!confirm("Xác nhận xoá sản phẩm?")) return;
+      const res = await fetch(`/api/products/${id}`, {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Xoá thành công!");
+        loadProducts();
+      }
+    }
+
+    // Khi load trang admin.html, tự động tải danh sách
+    loadProducts();
+  </script>
+</body>
+</html>
