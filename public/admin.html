@@ -4,6 +4,18 @@
 <head>
   <meta charset="UTF-8" />
   <title>Admin Panel - Quản lý sản phẩm</title>
+  <style>
+    /* Chỉ là ví dụ styling tối thiểu */
+    .product-item {
+      margin-bottom: 8px;
+    }
+    .update-form {
+      margin-top: 16px;
+      border: 1px solid #ccc;
+      padding: 8px;
+      display: none; /* Ẩn form sửa lúc đầu */
+    }
+  </style>
 </head>
 <body>
   <h1>Quản lý sản phẩm</h1>
@@ -18,23 +30,40 @@
   <!-- Danh sách sản phẩm -->
   <div id="product-list"></div>
 
+  <!-- Form sửa sản phẩm (ẩn/hiện khi bấm Sửa) -->
+  <div class="update-form" id="update-form">
+    <h3>Sửa sản phẩm</h3>
+    <input id="update-name" placeholder="Tên sản phẩm" />
+    <input id="update-price" placeholder="Giá" type="number" />
+    <input type="hidden" id="update-id" /> <!-- Lưu ID sản phẩm cần sửa -->
+    <button onclick="updateProduct()">Cập nhật</button>
+    <button onclick="cancelUpdate()">Hủy</button>
+  </div>
+
   <script>
-    // Hàm tải danh sách sản phẩm
+    // Tải danh sách sản phẩm
     async function loadProducts() {
-      const res = await fetch('/api/products');  // Gọi GET /api/products
+      const res = await fetch('/api/products');  // Gọi GET /api/products (không cần token)
       const products = await res.json();
       const container = document.getElementById('product-list');
 
       container.innerHTML = products.map(p => `
-        <div style="margin-bottom: 8px;">
+        <div class="product-item">
           <strong>${p.name}</strong> - ${p.price} đ
-          <button onclick="deleteProduct(${p.id})">Xoá</button>
+          <button onclick="deleteProduct('${p._id || p.id}')">Xoá</button>
+          <button onclick="showUpdateForm('${p._id || p.id}','${p.name}',${p.price})">Sửa</button>
         </div>
       `).join('');
     }
 
-    // Hàm thêm sản phẩm
+    // Thêm sản phẩm
     async function addProduct() {
+      const token = localStorage.getItem('token'); 
+      if (!token) {
+        alert("Bạn chưa đăng nhập!");
+        return;
+      }
+
       const name = document.getElementById('name').value;
       const price = document.getElementById('price').value;
 
@@ -45,34 +74,103 @@
 
       const res = await fetch('/api/products', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
         body: JSON.stringify({ name, price })
       });
       const data = await res.json();
       if (data.success) {
         alert("Thêm sản phẩm thành công!");
-        loadProducts(); // Reload danh sách
         // Xoá nội dung input
         document.getElementById('name').value = '';
         document.getElementById('price').value = '';
+        loadProducts();
+      } else {
+        alert("Lỗi khi thêm sản phẩm");
       }
     }
 
-    // Hàm xoá sản phẩm
+    // Xoá sản phẩm
     async function deleteProduct(id) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Bạn chưa đăng nhập!");
+        return;
+      }
       if (!confirm("Xác nhận xoá sản phẩm?")) return;
+
       const res = await fetch(`/api/products/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
       });
       const data = await res.json();
       if (data.success) {
-        alert("Xoá thành công!");
+        alert("Xoá sản phẩm thành công!");
         loadProducts();
+      } else {
+        alert("Lỗi khi xoá sản phẩm");
       }
     }
 
-    // Khi load trang admin.html, tự động tải danh sách
+    // Hiển thị form sửa sản phẩm
+    function showUpdateForm(id, currentName, currentPrice) {
+      // Lưu ID, name, price vào form
+      document.getElementById('update-id').value = id;
+      document.getElementById('update-name').value = currentName;
+      document.getElementById('update-price').value = currentPrice;
+
+      // Hiển thị form
+      document.getElementById('update-form').style.display = 'block';
+    }
+
+    // Ẩn form sửa
+    function cancelUpdate() {
+      document.getElementById('update-form').style.display = 'none';
+    }
+
+    // Gọi API PUT /api/products/:id
+    async function updateProduct() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Bạn chưa đăng nhập!");
+        return;
+      }
+
+      const id = document.getElementById('update-id').value;
+      const name = document.getElementById('update-name').value;
+      const price = document.getElementById('update-price').value;
+
+      if (!name || !price) {
+        alert("Vui lòng nhập đủ thông tin");
+        return;
+      }
+
+      const res = await fetch(`/api/products/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ name, price })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Cập nhật sản phẩm thành công!");
+        // Ẩn form
+        document.getElementById('update-form').style.display = 'none';
+        loadProducts();
+      } else {
+        alert(data.message || "Lỗi khi cập nhật sản phẩm");
+      }
+    }
+
+    // Khi trang load, tự động tải danh sách
     loadProducts();
   </script>
 </body>
 </html>
+
