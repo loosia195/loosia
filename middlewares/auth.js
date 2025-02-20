@@ -18,7 +18,8 @@ module.exports = (req, res, next) => {
     }
 
     // Giải mã token
-    const decoded = jwt.verify(token, "SECRET_KEY");
+    const secretKey = process.env.SECRET_KEY || 'fallback_secret';
+    const decoded = jwt.verify(token, secretKey);
     req.user = decoded; // { userId, role, iat, exp }
     next();
   } catch (error) {

@@ -1,23 +1,33 @@
 // routes/userRoutes.js
-const express = require("express");
-const userController = require("../controllers/userController");
-const auth = require("../middlewares/auth");
+const express = require('express');
+const userController = require('../controllers/userController');
+const auth = require('../middlewares/auth');
+const checkRole = require('../middlewares/checkRole');
 
 const router = express.Router();
 
-// Đăng ký
-router.post("/register", userController.register);
+/*
+  * CHÍNH SÁCH:
+  * 1) Đăng ký user => public (hoặc admin-only, tuỳ anh).
+  * 2) GET user list => chỉ admin => role='admin'.
+  * 3) DELETE user => chỉ admin => role='admin'.
+  * 4) UPDATE user role => chỉ admin => role='admin'.
+*/
 
-// Đăng nhập
-router.post("/login", userController.login);
+// 1) Đăng ký user (public):
+//    Nếu anh muốn chỉ admin được tạo user, thì thêm checkRole(['admin']).
+router.post('/register', userController.register);
 
-// Lấy danh sách user (chỉ admin => auth)
-router.get("/", auth, userController.getUsers);
+// 2) Đăng nhập user (public):
+router.post('/login', userController.login);
 
-// Xoá user
-router.delete("/:id", auth, userController.deleteUser);
+// 3) GET user list => chỉ admin
+router.get('/', auth, checkRole(['admin']), userController.getUsers);
 
-// Sửa role user
-router.put("/:id", auth, userController.updateUserRole);
+// 4) DELETE user => chỉ admin
+router.delete('/:id', auth, checkRole(['admin']), userController.deleteUser);
+
+// 5) UPDATE user role => chỉ admin
+router.put('/:id', auth, checkRole(['admin']), userController.updateUserRole);
 
 module.exports = router;
