@@ -98,6 +98,26 @@ function ProductDetailPage() {
     }
   };
 
+  // Hàm thêm sản phẩm vào giỏ (quantity mặc định = 1)
+  const handleAddToCart = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        'http://localhost:3000/api/cart',
+        { productId: product._id, quantity: 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.success) {
+        alert('Đã thêm sản phẩm vào giỏ');
+      } else {
+        alert('Lỗi khi thêm vào giỏ');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Server error');
+    }
+  };
+
   if (!product) {
     return <div>Loading product details...</div>;
   }
@@ -107,6 +127,11 @@ function ProductDetailPage() {
       <h2>Product Detail</h2>
       <h3>{product.name} - {product.price} VND</h3>
       <p>Category: {product.category}</p>
+
+      {/* Nút Thêm vào giỏ */}
+      <button onClick={handleAddToCart} style={{ marginBottom: '16px' }}>
+        Thêm vào giỏ
+      </button>
 
       {/* Hiển thị nhiều ảnh + nút Xoá ảnh */}
       {product.imageURLs && product.imageURLs.length > 0 ? (

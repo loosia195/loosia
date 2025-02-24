@@ -1,32 +1,108 @@
-const express = require("express");
-const cartController = require("../controllers/cartController");
-const auth = require("../middlewares/auth");
+// routes/cartRoutes.js
+const express = require('express');
+const auth = require('../middlewares/auth');
+const Cart = require('../models/cart');
+const Product = require('../models/product');
 
 const router = express.Router();
 
-/*
-  CHÍNH SÁCH:
-  1. POST /api/cart
-     - Thêm sản phẩm vào giỏ hàng của người dùng đã đăng nhập.
-  2. GET /api/cart
-     - Lấy thông tin giỏ hàng hiện tại của người dùng.
-  3. DELETE /api/cart/:productId
-     - Xoá 1 sản phẩm khỏi giỏ dựa trên productId.
-  4. POST /api/cart/checkout
-     - Tạo đơn hàng từ giỏ hàng và làm trống giỏ.
-*/
+/**
+ * POST /api/cart
+ * - Thêm sản phẩm vào giỏ (nếu đã có => tăng quantity)
+ * - user = req.user.userId (lấy từ token)
+ */
+router.post('/', auth, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { productId, quantity } = req.body; // quantity mặc định = 1
 
-// Thêm sản phẩm vào giỏ
-router.post("/", auth, cartController.addToCart);
+    // Tìm cart theo user
+    let cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      // Chưa có => tạo mới
+      cart = new Cart({ user: userId, items: [] });
+    }
 
-// Lấy giỏ hàng
-router.get("/", auth, cartController.getCart);
+    // Kiểm tra xem items đã có product này chưa
+    const idx = cart.items.findIndex(
+      (item) => item.product.toString() === productId
+    );
 
-// Xoá 1 sản phẩm khỏi giỏ theo productId
-router.delete("/:productId", auth, cartController.removeItem);
+    if (idx > -1) {
+      // Có => tăng quantity
+      cart.items[idx].quantity += quantity || 1;
+    } else {
+      // Chưa có => push
+      cart.items.push({
+        product: productId,
+        quantity: quantity || 1,
+      });
+    }
 
-// Tạo đơn hàng từ giỏ và làm trống giỏ
-router.post("/checkout", auth, cartController.checkout);
+    await cart.save();
+    // Optional: populate product info
+    await cart.populate('items.product');
+
+    return res.json({ success: true, cart });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+/**
+ * GET /api/cart
+ * - Lấy giỏ hàng hiện tại của user
+ */
+router.get('/', auth, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    if (!cart) {
+      // Chưa có cart => trả items rỗng
+      return res.json({ success: true, cart: { items: [] } });
+    }
+    return res.json({ success: true, cart });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+/**
+ * DELETE /api/cart/:productId
+ * - Xoá 1 sản phẩm khỏi giỏ
+ */
+router.delete('/:productId', auth, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { productId } = req.params;
+
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      return res.json({ success: true, cart: { items: [] } });
+    }
+
+    // filter out product
+    cart.items = cart.items.filter(
+      (item) => item.product.toString() !== productId
+    );
+
+    await cart.save();
+    await cart.populate('items.product');
+
+    return res.json({ success: true, cart });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+/**
+ * (Tuỳ chọn) PUT /api/cart/:productId => cập nhật quantity
+ */
+// router.put('/:productId', auth, async (req, res) => {
+//   ...
+// });
 
 module.exports = router;
-

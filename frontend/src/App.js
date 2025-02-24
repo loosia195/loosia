@@ -7,6 +7,7 @@ import ProductListPage from './pages/ProductListPage';
 import AddProductPage from './pages/AddProductPage';
 import EditProductPage from './pages/EditProductPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import CartPage from './pages/CartPage';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/add-product" element={<AddProductPage />} />
         <Route path="/edit-product/:id" element={<EditProductPage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
+        <Route path="/cart" element={<CartPage />} />
         {/* Thêm route khác: cart, order, v.v. */}
       </Routes>
     </Router>
