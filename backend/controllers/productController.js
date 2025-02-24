@@ -58,8 +58,8 @@ const productController = {
         .limit(limitNum)
         .sort(sortObj);
 
-      // Trả về mảng sản phẩm
-      return res.json(products);
+      // Trả về mảng sản phẩm kèm success: true
+      return res.json({ success: true, products });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ success: false, message: "Lỗi server" });
@@ -150,8 +150,6 @@ const productController = {
       return res.status(500).json({ success: false, message: "Lỗi server" });
     }
   },
-
-  // Đã loại bỏ hàm uploadImage để tránh trùng lặp (xung đột) với uploadController.js
 };
 
 module.exports = productController;
