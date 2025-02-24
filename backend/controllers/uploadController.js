@@ -86,7 +86,7 @@ router.post(
  * 3) Route upload nhiều ảnh (multiple)
  *    - Dành cho trường hợp Product có mảng "imageURLs: [String]"
  *    - Mỗi lần upload => thêm (push) ảnh mới vào mảng
- *    - Tuỳ ý xóa ảnh cũ hoặc thay thế toàn bộ
+ *    - Tuỳ ý xóa ảnh cũ hoặc thay thế toàn bộ (ở đây là push thêm)
  */
 router.post(
   '/product/:id/uploadImages',
@@ -112,6 +112,9 @@ router.post(
       // 3.2) Tuỳ logic => push thêm hay thay thế
       //  - Nếu push thêm: product.imageURLs.push(...newImagePaths);
       //  - Nếu thay thế toàn bộ: product.imageURLs = newImagePaths;
+      if (!product.imageURLs) {
+        product.imageURLs = [];
+      }
       product.imageURLs.push(...newImagePaths);
 
       await product.save();
@@ -131,3 +134,4 @@ router.post(
 );
 
 module.exports = router;
+

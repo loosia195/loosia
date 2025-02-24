@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000/api';
 
-// Hàm tạo sản phẩm
+// 1) Tạo sản phẩm => POST /api/product
 export async function createProduct(token, data) {
   const res = await axios.post(`${BASE_URL}/product`, data, {
     headers: { Authorization: `Bearer ${token}` }
@@ -11,7 +11,7 @@ export async function createProduct(token, data) {
   return res.data;
 }
 
-// Hàm lấy danh sách sản phẩm
+// 2) Lấy danh sách sản phẩm => GET /api/product
 export async function getProducts(token) {
   const res = await axios.get(`${BASE_URL}/product`, {
     headers: { Authorization: `Bearer ${token}` }
@@ -19,7 +19,7 @@ export async function getProducts(token) {
   return res.data;
 }
 
-// Hàm upload ảnh cho sản phẩm
+// 3) Upload 1 ảnh (cũ)
 export async function uploadImage(token, productId, file) {
   const formData = new FormData();
   formData.append('image', file);
@@ -33,19 +33,40 @@ export async function uploadImage(token, productId, file) {
   return res.data;
 }
 
-// Lấy 1 sản phẩm theo id => GET /api/product/:id
-export async function getProductById(token, productId) {
-  const res = await axios.get(`http://localhost:3000/api/product/${productId}`, {
-    headers: { Authorization: `Bearer ${token}` }
+/*
+  4) Hàm mới: Upload nhiều ảnh (uploadMultipleImages)
+     - Gửi nhiều file trong 1 request
+     - route backend: POST /api/product/:id/uploadImages
+     - key: "images" (phải trùng với upload.array('images', <limit>) phía server)
+*/
+export async function uploadMultipleImages(token, productId, files) {
+  const formData = new FormData();
+  // Lặp qua mảng files, append vào formData
+  for (let i = 0; i < files.length; i++) {
+    formData.append('images', files[i]);
+  }
+
+  const res = await axios.post(`${BASE_URL}/product/${productId}/uploadImages`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }
   });
-  return res.data; // { success: true, product: { ... } } hoặc product object
+  return res.data;
 }
 
-// Cập nhật sản phẩm => PUT /api/product/:id
+// 5) Lấy 1 sản phẩm => GET /api/product/:id
+export async function getProductById(token, productId) {
+  const res = await axios.get(`${BASE_URL}/product/${productId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data; // { success: true, product: {...} }
+}
+
+// 6) Cập nhật sản phẩm => PUT /api/product/:id
 export async function updateProduct(token, productId, data) {
-  const res = await axios.put(`http://localhost:3000/api/product/${productId}`, data, {
+  const res = await axios.put(`${BASE_URL}/product/${productId}`, data, {
     headers: { Authorization: `Bearer ${token}` }
   });
   return res.data;
 }
-// Các hàm khác (updateProduct, deleteProduct, ...) có thể được thêm tương tự.

@@ -1,36 +1,40 @@
 // src/pages/AddProductPage.js
 import React, { useState } from 'react';
-import { createProduct, uploadImage } from '../services/productService';
+import { createProduct, uploadMultipleImages } from '../services/productService';
 
 function AddProductPage() {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
-  const [file, setFile] = useState(null); // State lưu file ảnh
+  // Thay file => files (mảng)
+  const [files, setFiles] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
       const data = { name, price: Number(price), category };
+
+      // 1) Tạo sản phẩm
       const res = await createProduct(token, data);
       if (res.success) {
-        // Nếu có file ảnh được chọn, gọi API upload ảnh
-        if (file) {
-          const uploadRes = await uploadImage(token, res.product._id, file);
+        // 2) Nếu có files => gọi API uploadMultipleImages
+        if (files.length > 0) {
+          const productId = res.product._id;
+          const uploadRes = await uploadMultipleImages(token, productId, files);
           if (uploadRes.success) {
-            alert('Thêm sản phẩm và upload ảnh thành công!');
+            alert('Thêm sản phẩm và upload nhiều ảnh thành công!');
           } else {
-            alert('Thêm sản phẩm thành công nhưng upload ảnh thất bại: ' + uploadRes.message);
+            alert('Thêm sản phẩm OK, nhưng upload ảnh thất bại: ' + uploadRes.message);
           }
         } else {
-          alert('Thêm sản phẩm thành công!');
+          alert('Thêm sản phẩm thành công (không upload ảnh)!');
         }
         // Reset form
         setName('');
         setPrice('');
         setCategory('');
-        setFile(null);
+        setFiles([]);
       } else {
         alert(res.message || 'Có lỗi khi thêm sản phẩm');
       }
@@ -40,9 +44,10 @@ function AddProductPage() {
     }
   };
 
-  // Xử lý chọn file
+  // Xử lý chọn nhiều file
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    // e.target.files là FileList => chuyển thành array
+    setFiles(Array.from(e.target.files));
   };
 
   return (
@@ -76,11 +81,12 @@ function AddProductPage() {
           />
         </div>
         <div>
-          <label>Image:</label>
+          <label>Images (multiple):</label>
           <input 
             type="file"
-            onChange={handleFileChange}
+            multiple      // Cho phép chọn nhiều file
             accept="image/*"
+            onChange={handleFileChange}
           />
         </div>
         <button type="submit">Add</button>
