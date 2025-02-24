@@ -13,7 +13,7 @@ const router = express.Router();
 /**
  * 1) Cấu hình Multer
  *    - Lưu file vào thư mục "backend/uploads"
- *    - Tên file = timestamp + extension
+ *    - Tên file = <timestamp>-<random> + extension
  */
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -21,7 +21,10 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, '..', 'uploads'));
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    // Thêm random suffix để tránh trùng tên file khi upload cùng mili-giây
+    const uniqueSuffix = '-' + Math.round(Math.random() * 1e9);
+    const fileName = Date.now() + uniqueSuffix + path.extname(file.originalname);
+    cb(null, fileName);
   },
 });
 const upload = multer({ storage });
@@ -85,8 +88,10 @@ router.post(
 /**
  * 3) Route upload nhiều ảnh (multiple)
  *    - Dành cho trường hợp Product có mảng "imageURLs: [String]"
- *    - Mỗi lần upload => thêm (push) ảnh mới vào mảng
- *    - Tuỳ ý xóa ảnh cũ hoặc thay thế toàn bộ (ở đây là push thêm)
+ *    - Mặc định: "push" thêm ảnh mới vào mảng
+ *    - Nếu muốn thay thế toàn bộ, anh có thể:
+ *        1) Xoá file cũ => product.imageURLs.forEach(...) fs.unlinkSync(...)
+ *        2) product.imageURLs = newImagePaths;
  */
 router.post(
   '/product/:id/uploadImages',
@@ -102,20 +107,27 @@ router.post(
           .json({ success: false, message: 'Product not found' });
       }
 
-      // 3.1) Tạo mảng đường dẫn cho ảnh mới
-      // => "uploads/filename.jpg" => push vào product.imageURLs
+      // 3.1) Tạo mảng đường dẫn cho ảnh mới => "uploads/filename.jpg"
       const newImagePaths = req.files.map((file) => {
         let relativePath = path.join('uploads', file.filename);
         return relativePath.replace(/\\/g, '/');
       });
 
-      // 3.2) Tuỳ logic => push thêm hay thay thế
-      //  - Nếu push thêm: product.imageURLs.push(...newImagePaths);
-      //  - Nếu thay thế toàn bộ: product.imageURLs = newImagePaths;
+      // 3.2) Mặc định: push thêm ảnh mới
+      //    => Nếu muốn thay thế toàn bộ, anh comment push và dùng code thay thế
       if (!product.imageURLs) {
         product.imageURLs = [];
       }
       product.imageURLs.push(...newImagePaths);
+
+      // (Nếu thay thế toàn bộ, ví dụ):
+      // // Xoá file cũ
+      // product.imageURLs.forEach((oldPath) => {
+      //   const absPath = path.join(__dirname, '..', oldPath);
+      //   if (fs.existsSync(absPath)) fs.unlinkSync(absPath);
+      // });
+      // // Rồi gán mảng mới
+      // product.imageURLs = newImagePaths;
 
       await product.save();
 
@@ -134,4 +146,3 @@ router.post(
 );
 
 module.exports = router;
-

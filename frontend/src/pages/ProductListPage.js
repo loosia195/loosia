@@ -12,7 +12,13 @@ function ProductListPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setProducts(res.data); // Giả sử res.data = mảng product
+        // Backend trả về { success: true, products: [...] }
+        // => Chỉ gán res.data.products vào state
+        if (res.data.success) {
+          setProducts(res.data.products);
+        } else {
+          alert(res.data.message || 'Error loading products');
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -25,7 +31,9 @@ function ProductListPage() {
       <h2>Product List</h2>
       {products.map((p) => (
         <div key={p._id}>
-          <h3>{p.name} - {p.price} VND</h3>
+          <h3>
+            {p.name} - {p.price} VND
+          </h3>
           {/* Hiển thị nhiều ảnh */}
           {p.imageURLs && p.imageURLs.length > 0 ? (
             p.imageURLs.map((imgPath, idx) => (

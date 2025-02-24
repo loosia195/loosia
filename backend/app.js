@@ -108,6 +108,8 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const uploadRouter = require('./controllers/uploadController');
+const reviewRoutes = require('./routes/reviewRoutes');
+
 
 // Dùng payment
 app.use("/api/payment", paymentRoutes);
@@ -117,6 +119,8 @@ app.use("/api/product", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use('/api', uploadRouter);
+app.use('/api/product', reviewRoutes);
+
 
 // 9) EXPORT
 //--------------------------------------------------
