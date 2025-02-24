@@ -34,9 +34,7 @@ function ProductDetailPage() {
 
     // 2) Lấy danh sách review cho sản phẩm
     axios
-      .get(`http://localhost:3000/api/product/${id}/review`, {
-        // GET /api/product/:id/review (không nhất thiết cần token nếu review public)
-      })
+      .get(`http://localhost:3000/api/product/${id}/review`)
       .then((res) => {
         if (res.data.success) {
           setReviews(res.data.reviews);
@@ -75,6 +73,31 @@ function ProductDetailPage() {
     }
   };
 
+  // Hàm xóa ảnh cụ thể
+  const handleDeleteImage = async (imgPath) => {
+    try {
+      const token = localStorage.getItem('token');
+      // Gửi DELETE /api/product/:id/image với body { imageURL: imgPath }
+      const res = await axios.delete(
+        `http://localhost:3000/api/product/${product._id}/image`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { imageURL: imgPath }, // Body JSON
+        }
+      );
+      if (res.data.success) {
+        alert('Xoá ảnh thành công');
+        // Cập nhật state product => lấy product mới từ backend
+        setProduct(res.data.product);
+      } else {
+        alert(res.data.message || 'Xoá ảnh thất bại');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Lỗi khi xóa ảnh');
+    }
+  };
+
   if (!product) {
     return <div>Loading product details...</div>;
   }
@@ -85,16 +108,19 @@ function ProductDetailPage() {
       <h3>{product.name} - {product.price} VND</h3>
       <p>Category: {product.category}</p>
 
-      {/* Hiển thị nhiều ảnh */}
+      {/* Hiển thị nhiều ảnh + nút Xoá ảnh */}
       {product.imageURLs && product.imageURLs.length > 0 ? (
         product.imageURLs.map((imgPath, idx) => (
-          <img
-            key={idx}
-            src={`http://localhost:3000/${imgPath}`}
-            alt={`img-${idx}`}
-            width="150"
-            style={{ marginRight: '8px' }}
-          />
+          <div key={idx} style={{ display: 'inline-block', margin: '8px' }}>
+            <img
+              src={`http://localhost:3000/${imgPath}`}
+              alt={`img-${idx}`}
+              width="150"
+            />
+            <button onClick={() => handleDeleteImage(imgPath)}>
+              Xoá ảnh
+            </button>
+          </div>
         ))
       ) : (
         <p>No images available</p>
@@ -133,7 +159,10 @@ function ProductDetailPage() {
           <p>Chưa có đánh giá nào.</p>
         ) : (
           reviews.map((rv) => (
-            <div key={rv._id} style={{ border: '1px solid #ccc', margin: '8px 0', padding: '8px' }}>
+            <div
+              key={rv._id}
+              style={{ border: '1px solid #ccc', margin: '8px 0', padding: '8px' }}
+            >
               <p><strong>User:</strong> {rv.user?.username || rv.user}</p>
               <p><strong>Rating:</strong> {rv.rating}</p>
               <p>{rv.comment}</p>

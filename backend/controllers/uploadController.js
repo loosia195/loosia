@@ -114,19 +114,16 @@ router.post(
       });
 
       // 3.2) Mặc định: push thêm ảnh mới
-      //    => Nếu muốn thay thế toàn bộ, anh comment push và dùng code thay thế
       if (!product.imageURLs) {
         product.imageURLs = [];
       }
       product.imageURLs.push(...newImagePaths);
 
       // (Nếu thay thế toàn bộ, ví dụ):
-      // // Xoá file cũ
       // product.imageURLs.forEach((oldPath) => {
       //   const absPath = path.join(__dirname, '..', oldPath);
       //   if (fs.existsSync(absPath)) fs.unlinkSync(absPath);
       // });
-      // // Rồi gán mảng mới
       // product.imageURLs = newImagePaths;
 
       await product.save();
@@ -144,5 +141,52 @@ router.post(
     }
   }
 );
+
+/**
+ * 4) Route xóa 1 ảnh cụ thể (DELETE)
+ *    - Xóa file trên server + xóa phần tử trong product.imageURLs
+ */
+router.delete('/product/:id/image', auth, async (req, res) => {
+  try {
+    const productId = req.params.id;
+    // Body JSON => { imageURL: "uploads/abc.jpg" }
+    const { imageURL } = req.body;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    // Tìm vị trí ảnh trong mảng imageURLs
+    const index = product.imageURLs.findIndex((p) => p === imageURL);
+    if (index === -1) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Image not found in product' });
+    }
+
+    // Xóa file trên server
+    const absolutePath = path.join(__dirname, '..', imageURL);
+    if (fs.existsSync(absolutePath)) {
+      fs.unlinkSync(absolutePath);
+    }
+
+    // Xóa phần tử khỏi mảng
+    product.imageURLs.splice(index, 1);
+
+    await product.save();
+
+    return res.json({
+      success: true,
+      message: 'Xóa ảnh thành công!',
+      product,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Lỗi server' });
+  }
+});
 
 module.exports = router;
