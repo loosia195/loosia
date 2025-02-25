@@ -4,9 +4,12 @@
 // 1) IMPORT
 //--------------------------------------------------
 const express = require('express');
-const userController = require('../controllers/userController'); // thay "../backend/controllers" => "../controllers"
+const userController = require('../controllers/userController');
 const auth = require('../middlewares/auth');
 const checkRole = require('../middlewares/checkRole');
+
+// **Thiếu import model User => Thêm:
+const User = require('../models/user');
 
 // 2) CREATE ROUTER
 //--------------------------------------------------
@@ -24,7 +27,6 @@ const router = express.Router();
 //--------------------------------------------------
 
 // a) Đăng ký user (public)
-//    Nếu anh muốn chỉ admin được tạo user => router.post('/register', auth, checkRole(['admin']), userController.register);
 router.post('/register', userController.register);
 
 // b) Đăng nhập user (public)
@@ -39,7 +41,25 @@ router.delete('/:id', auth, checkRole(['admin']), userController.deleteUser);
 // e) UPDATE user role => chỉ admin
 router.put('/:id', auth, checkRole(['admin']), userController.updateUserRole);
 
+// f) Lấy thông tin user đang đăng nhập
+router.get('/me', auth, async (req, res) => {
+  try {
+    // req.user.userId được gắn bởi middleware auth (decode JWT)
+    const userId = req.user.userId;
+
+    // Tìm user trong DB
+    const user = await User.findById(userId).select('-password'); // ẩn password
+    if (!user) {
+      return res.json({ success: false, message: 'User not found' });
+    }
+
+    return res.json({ success: true, user });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
 // 4) EXPORT
 //--------------------------------------------------
 module.exports = router;
-
