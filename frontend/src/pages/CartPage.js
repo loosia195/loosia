@@ -43,6 +43,28 @@ function CartPage() {
     }
   };
 
+  // Hàm "Thanh toán" => Tạo đơn hàng, xóa giỏ
+  const handleCheckout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        'http://localhost:3000/api/order',
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.success) {
+        alert('Đã đặt hàng thành công! Order ID: ' + res.data.order._id);
+        // Xóa cart items => setCart({ items: [] });
+        setCart({ items: [] });
+      } else {
+        alert(res.data.message || 'Lỗi khi đặt hàng');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Server error');
+    }
+  };
+
   if (!cart) {
     return <div>Loading cart...</div>;
   }
@@ -51,12 +73,21 @@ function CartPage() {
     <div>
       <h2>Giỏ hàng của bạn</h2>
       {cart.items && cart.items.length > 0 ? (
-        cart.items.map((item) => (
-          <div key={item.product._id} style={{ margin: '8px 0' }}>
-            <p>Sản phẩm: {item.product.name} - Số lượng: {item.quantity}</p>
-            <button onClick={() => handleDeleteItem(item.product._id)}>Xóa</button>
-          </div>
-        ))
+        <div>
+          {cart.items.map((item) => (
+            <div key={item.product._id} style={{ margin: '8px 0' }}>
+              <p>
+                Sản phẩm: {item.product.name} - Số lượng: {item.quantity}
+              </p>
+              <button onClick={() => handleDeleteItem(item.product._id)}>
+                Xóa
+              </button>
+            </div>
+          ))}
+
+          {/* Nút "Thanh toán" */}
+          <button onClick={handleCheckout}>Thanh toán</button>
+        </div>
       ) : (
         <p>Giỏ hàng trống</p>
       )}

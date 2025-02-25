@@ -1,29 +1,50 @@
+// routes/orderRoutes.js
 const express = require('express');
-const orderController = require('../controllers/orderController'); // Nếu file orderController đã được di chuyển sang folder controllers
 const auth = require('../middlewares/auth');
-const checkRole = require('../middlewares/checkRole');
+const Cart = require('../models/cart');
+const Order = require('../models/order');
+const Product = require('../models/product');
 
 const router = express.Router();
 
-/*
-  CHÍNH SÁCH:
-  1. GET /api/order
-     - Nếu role là 'admin': xem tất cả đơn hàng
-     - Nếu role khác: chỉ xem đơn hàng của người dùng đó
-  2. GET /api/order/:id
-     - Xem chi tiết đơn hàng (với logic kiểm tra: admin có thể xem tất cả, user chỉ xem đơn của mình)
-  3. PUT /api/order/:id
-     - Cập nhật trạng thái đơn hàng
-     - Chỉ cho phép admin và employee thực hiện thao tác này
-*/
+router.post('/', auth, async (req, res) => {
+  try {
+    const userId = req.user.userId;
 
-// Lấy danh sách đơn hàng
-router.get('/', auth, orderController.getOrders);
+    // Lấy cart
+    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    if (!cart || cart.items.length === 0) {
+      return res.json({ success: false, message: 'Giỏ hàng trống' });
+    }
 
-// Lấy chi tiết một đơn hàng
-router.get('/:id', auth, orderController.getOrderById);
+    // Tính totalPrice
+    let total = 0;
+    cart.items.forEach((item) => {
+      total += item.product.price * item.quantity;
+    });
 
-// Cập nhật trạng thái đơn hàng (chỉ admin và employee)
-router.put('/:id', auth, checkRole(['admin', 'employee']), orderController.updateOrderStatus);
+    // Tạo order
+    const newOrder = new Order({
+      user: userId,
+      items: cart.items.map((it) => ({
+        product: it.product._id,
+        quantity: it.quantity,
+      })),
+      totalPrice: total,
+      status: 'pending',
+    });
+    await newOrder.save();
+
+    // Clear cart
+    cart.items = [];
+    await cart.save();
+
+    return res.json({ success: true, order: newOrder });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
 
 module.exports = router;
+
