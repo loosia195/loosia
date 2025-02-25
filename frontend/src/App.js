@@ -8,7 +8,7 @@ import AddProductPage from './pages/AddProductPage';
 import EditProductPage from './pages/EditProductPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
-
+import OrderListPage from './pages/OrderListPage';
 
 function App() {
   return (
@@ -21,6 +21,8 @@ function App() {
         <Route path="/edit-product/:id" element={<EditProductPage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/orders" element={<OrderListPage />} />
+
         {/* Thêm route khác: cart, order, v.v. */}
       </Routes>
     </Router>

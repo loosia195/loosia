@@ -7,6 +7,10 @@ const Product = require('../models/product');
 
 const router = express.Router();
 
+/**
+ * Tạo đơn hàng (checkout)
+ * POST /api/order
+ */
 router.post('/', auth, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -46,5 +50,67 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+/**
+ * Lấy danh sách đơn hàng
+ * GET /api/order
+ * - Admin => xem tất cả
+ * - User => xem đơn của chính họ
+ */
+router.get('/', auth, async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+      // Admin => xem tất cả order
+      const orders = await Order.find()
+        .populate('items.product')
+        .populate('user');
+      return res.json({ success: true, orders });
+    } else {
+      // User => xem đơn hàng của chính họ
+      const orders = await Order.find({ user: req.user.userId })
+        .populate('items.product')
+        .populate('user');
+      return res.json({ success: true, orders });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+/**
+ * Cập nhật trạng thái đơn hàng
+ * PUT /api/order/:id
+ * - Chỉ admin
+ * - body: { status: "shipped" | "done" | "cancelled" ... }
+ */
+router.put('/:id', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res
+        .status(403)
+        .json({ success: false, message: 'Không có quyền (admin)' });
+    }
+    const { id } = req.params;
+    const { status } = req.body; // "shipped", "done", "cancelled"...
+    const updatedOrder = await Order.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    )
+      .populate('items.product')
+      .populate('user');
+    if (!updatedOrder) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Không tìm thấy order' });
+    }
+    return res.json({ success: true, order: updatedOrder });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
 module.exports = router;
+
 
