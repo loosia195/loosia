@@ -2,6 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+// Material-UI
+import {
+  Container,
+  Typography,
+  Paper,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
+
 function OrderListPage() {
   const [orders, setOrders] = useState([]);
   const [role, setRole] = useState(''); // Lưu role để biết user hay admin
@@ -11,7 +23,7 @@ function OrderListPage() {
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    // Gọi API lấy danh sách order
+    // 1) Gọi API lấy danh sách order
     axios
       .get('http://localhost:3000/api/order', {
         headers: { Authorization: `Bearer ${token}` },
@@ -35,7 +47,7 @@ function OrderListPage() {
         alert('Server error');
       });
 
-    // Gọi thêm 1 API (hoặc decode token) để biết role
+    // 2) Gọi thêm 1 API (hoặc decode token) để biết role
     axios
       .get('http://localhost:3000/api/user/me', {
         headers: { Authorization: `Bearer ${token}` },
@@ -91,53 +103,76 @@ function OrderListPage() {
   };
 
   return (
-    <div>
-      <h2>Danh sách đơn hàng</h2>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        Danh sách đơn hàng
+      </Typography>
+
       {orders.length === 0 ? (
-        <p>Chưa có đơn hàng</p>
+        <Typography>Chưa có đơn hàng</Typography>
       ) : (
         orders.map((order) => (
-          <div
+          <Paper
             key={order._id}
-            style={{ border: '1px solid #ccc', margin: '8px 0', padding: '8px' }}
+            elevation={3}
+            sx={{ p: 2, mb: 2 }}
           >
-            <p>Order ID: {order._id}</p>
-            <p>Trạng thái: {order.status}</p>
-            <p>Tổng tiền: {order.totalPrice}</p>
-            <p>Ngày đặt: {new Date(order.createdAt).toLocaleString()}</p>
-            <p>Items:</p>
+            <Typography variant="subtitle1" gutterBottom>
+              <strong>Order ID:</strong> {order._id}
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              <strong>Trạng thái:</strong> {order.status}
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              <strong>Tổng tiền:</strong> {order.totalPrice}
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              <strong>Ngày đặt:</strong> {new Date(order.createdAt).toLocaleString()}
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              <strong>Items:</strong>
+            </Typography>
             {order.items.map((item, idx) => (
-              <div key={idx}>
-                <span>Sản phẩm: {item.product?.name}</span>
-                <span> - Số lượng: {item.quantity}</span>
-              </div>
+              <Typography key={idx} variant="body2" sx={{ ml: 2 }}>
+                Sản phẩm: {item.product?.name} - Số lượng: {item.quantity}
+              </Typography>
             ))}
 
             {/* Nếu role=admin => hiển thị dropdown + nút Cập nhật */}
             {role === 'admin' && (
               <div style={{ marginTop: '8px' }}>
-                <label>Cập nhật trạng thái: </label>
-                <select
-                  value={statusMap[order._id] || order.status}
-                  onChange={(e) => handleSelectChange(order._id, e.target.value)}
-                >
-                  <option value="pending">pending</option>
-                  <option value="shipped">shipped</option>
-                  <option value="done">done</option>
-                  <option value="cancelled">cancelled</option>
-                </select>
-                <button
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  Cập nhật trạng thái:
+                </Typography>
+                <FormControl size="small" sx={{ mr: 1 }}>
+                  <InputLabel id={`status-label-${order._id}`}>Trạng thái</InputLabel>
+                  <Select
+                    labelId={`status-label-${order._id}`}
+                    label="Trạng thái"
+                    value={statusMap[order._id] || order.status}
+                    onChange={(e) => handleSelectChange(order._id, e.target.value)}
+                    sx={{ width: 150 }}
+                  >
+                    <MenuItem value="pending">pending</MenuItem>
+                    <MenuItem value="shipped">shipped</MenuItem>
+                    <MenuItem value="done">done</MenuItem>
+                    <MenuItem value="cancelled">cancelled</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <Button
+                  variant="contained"
+                  color="primary"
                   onClick={() => handleUpdateStatus(order._id)}
-                  style={{ marginLeft: '8px' }}
                 >
                   Cập nhật
-                </button>
+                </Button>
               </div>
             )}
-          </div>
+          </Paper>
         ))
       )}
-    </div>
+    </Container>
   );
 }
 

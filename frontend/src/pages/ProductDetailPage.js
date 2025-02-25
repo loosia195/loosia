@@ -3,11 +3,21 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom'; 
 import axios from 'axios';
 
+// Material-UI
+import {
+  Container,
+  Typography,
+  Button,
+  Paper,
+  TextField,
+  Box
+} from '@mui/material';
+
 function ProductDetailPage() {
   const { id } = useParams(); // Lấy productId từ URL
   const [product, setProduct] = useState(null);
 
-  // Thêm state cho review
+  // State cho review
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [reviews, setReviews] = useState([]); // Danh sách review
@@ -119,86 +129,130 @@ function ProductDetailPage() {
   };
 
   if (!product) {
-    return <div>Loading product details...</div>;
+    return (
+      <Typography variant="h6" sx={{ mt: 2 }}>
+        Loading product details...
+      </Typography>
+    );
   }
 
   return (
-    <div>
-      <h2>Product Detail</h2>
-      <h3>{product.name} - {product.price} VND</h3>
-      <p>Category: {product.category}</p>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        Product Detail
+      </Typography>
+
+      <Typography variant="h6" gutterBottom>
+        {product.name} - {product.price} VND
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        Category: {product.category}
+      </Typography>
 
       {/* Nút Thêm vào giỏ */}
-      <button onClick={handleAddToCart} style={{ marginBottom: '16px' }}>
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ mb: 2 }}
+        onClick={handleAddToCart}
+      >
         Thêm vào giỏ
-      </button>
+      </Button>
 
       {/* Hiển thị nhiều ảnh + nút Xoá ảnh */}
       {product.imageURLs && product.imageURLs.length > 0 ? (
-        product.imageURLs.map((imgPath, idx) => (
-          <div key={idx} style={{ display: 'inline-block', margin: '8px' }}>
-            <img
-              src={`http://localhost:3000/${imgPath}`}
-              alt={`img-${idx}`}
-              width="150"
-            />
-            <button onClick={() => handleDeleteImage(imgPath)}>
-              Xoá ảnh
-            </button>
-          </div>
-        ))
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          {product.imageURLs.map((imgPath, idx) => (
+            <Paper
+              key={idx}
+              sx={{ p: 1, textAlign: 'center' }}
+              elevation={3}
+            >
+              <img
+                src={`http://localhost:3000/${imgPath}`}
+                alt={`img-${idx}`}
+                width="150"
+              />
+              <Button
+                variant="outlined"
+                color="error"
+                sx={{ mt: 1 }}
+                onClick={() => handleDeleteImage(imgPath)}
+              >
+                Xoá ảnh
+              </Button>
+            </Paper>
+          ))}
+        </Box>
       ) : (
-        <p>No images available</p>
+        <Typography sx={{ mt: 2 }}>No images available</Typography>
       )}
 
       {/* Form review */}
-      <div style={{ marginTop: '20px' }}>
-        <h4>Đánh giá sản phẩm</h4>
-        <form onSubmit={handleReviewSubmit}>
-          <div>
-            <label>Rating (1-5):</label>
-            <input
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Đánh giá sản phẩm
+        </Typography>
+        <Box component="form" onSubmit={handleReviewSubmit} sx={{ mb: 2 }}>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2">Rating (1-5):</Typography>
+            <TextField
               type="number"
               value={rating}
               onChange={(e) => setRating(e.target.value)}
-              min="1"
-              max="5"
+              inputProps={{ min: 1, max: 5 }}
               required
+              size="small"
             />
-          </div>
-          <div>
-            <label>Comment:</label>
-            <textarea
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2">Comment:</Typography>
+            <TextField
+              multiline
+              rows={3}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
+              fullWidth
+              size="small"
             />
-          </div>
-          <button type="submit">Gửi đánh giá</button>
-        </form>
-      </div>
+          </Box>
+          <Button type="submit" variant="contained" color="secondary">
+            Gửi đánh giá
+          </Button>
+        </Box>
+      </Box>
 
       {/* Danh sách review */}
-      <div style={{ marginTop: '20px' }}>
-        <h4>Danh sách đánh giá</h4>
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Danh sách đánh giá
+        </Typography>
         {reviews.length === 0 ? (
-          <p>Chưa có đánh giá nào.</p>
+          <Typography>Chưa có đánh giá nào.</Typography>
         ) : (
           reviews.map((rv) => (
-            <div
+            <Paper
               key={rv._id}
-              style={{ border: '1px solid #ccc', margin: '8px 0', padding: '8px' }}
+              sx={{ p: 2, mb: 2 }}
+              elevation={2}
             >
-              <p><strong>User:</strong> {rv.user?.username || rv.user}</p>
-              <p><strong>Rating:</strong> {rv.rating}</p>
-              <p>{rv.comment}</p>
-              <p style={{ fontSize: '0.85em', color: '#666' }}>
+              <Typography variant="body2" gutterBottom>
+                <strong>User:</strong> {rv.user?.username || rv.user}
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                <strong>Rating:</strong> {rv.rating}
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                {rv.comment}
+              </Typography>
+              <Typography variant="caption" sx={{ color: '#666' }}>
                 {new Date(rv.createdAt).toLocaleString()}
-              </p>
-            </div>
+              </Typography>
+            </Paper>
           ))
         )}
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
 }
 
