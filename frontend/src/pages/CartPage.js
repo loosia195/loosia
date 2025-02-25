@@ -2,6 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+// 1) Import Material-UI components
+import { 
+  Container, 
+  Typography, 
+  Button, 
+  Paper 
+} from '@mui/material';
+
 function CartPage() {
   const [cart, setCart] = useState(null);
 
@@ -66,32 +74,53 @@ function CartPage() {
   };
 
   if (!cart) {
-    return <div>Loading cart...</div>;
+    return <Typography variant="h6" sx={{ mt: 2 }}>Loading cart...</Typography>;
   }
 
   return (
-    <div>
-      <h2>Giỏ hàng của bạn</h2>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        Giỏ hàng của bạn
+      </Typography>
+
       {cart.items && cart.items.length > 0 ? (
         <div>
           {cart.items.map((item) => (
-            <div key={item.product._id} style={{ margin: '8px 0' }}>
-              <p>
-                Sản phẩm: {item.product.name} - Số lượng: {item.quantity}
-              </p>
-              <button onClick={() => handleDeleteItem(item.product._id)}>
+            <Paper 
+              key={item.product._id} 
+              sx={{ p: 2, mb: 2 }}
+              elevation={3}
+            >
+              <Typography variant="body1">
+                Sản phẩm: <strong>{item.product.name}</strong> 
+                {' '} - Số lượng: <strong>{item.quantity}</strong>
+              </Typography>
+              <Button 
+                variant="outlined" 
+                color="error" 
+                sx={{ mt: 1 }}
+                onClick={() => handleDeleteItem(item.product._id)}
+              >
                 Xóa
-              </button>
-            </div>
+              </Button>
+            </Paper>
           ))}
 
           {/* Nút "Thanh toán" */}
-          <button onClick={handleCheckout}>Thanh toán</button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleCheckout}
+          >
+            Thanh toán
+          </Button>
         </div>
       ) : (
-        <p>Giỏ hàng trống</p>
+        <Typography variant="body1">
+          Giỏ hàng trống
+        </Typography>
       )}
-    </div>
+    </Container>
   );
 }
 
