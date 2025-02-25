@@ -9,10 +9,12 @@ import EditProductPage from './pages/EditProductPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import OrderListPage from './pages/OrderListPage';
+import MyNavBar from './components/MyNavBar';
 
 function App() {
   return (
     <Router>
+      <MyNavBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
