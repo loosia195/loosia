@@ -1,0 +1,38 @@
+/* AddProductPage.css */
+
+/* To ensure the page is displayed as 2 columns: cột trái + cột phải */
+.add-product-page {
+  display: flex;       /* or use .u-flex if utility class */
+  gap: 16px;           /* khoảng cách giữa 2 cột, tuỳ anh */
+  padding: 16px;       /* khoảng cách ngoài, tuỳ anh */
+}
+
+/* Nếu anh muốn, có thể style .left-column và .right-column, 
+   nhưng nếu anh đã set inline style={{ width: '50%' }}, 
+   thì có thể không cần. Ví dụ: */
+/*
+.left-column {
+  width: 50%;
+  background-color: #fafafa;
+}
+
+.right-column {
+  width: 50%;
+  padding: 16px;
+}
+*/
+
+/* Hoặc anh có thể xóa inline style, 
+   chuyển vào đây như: 
+.left-column {
+  width: 40%;
+}
+.right-column {
+  width: 60%;
+}
+*/
+
+/* Tuỳ logic, anh có thể style thêm: 
+   .form-section, .form-field, .submit-btn, ...
+   Hoặc để ở file CSS cột phải (AddProductDetailInfo.css).
+*/

@@ -24,11 +24,11 @@ function App() {
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/orders" element={<OrderListPage />} />
-
-        {/* Thêm route khác: cart, order, v.v. */}
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
     </Router>
   );
 }
 
 export default App;
+

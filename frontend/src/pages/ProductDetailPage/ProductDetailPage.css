@@ -1,0 +1,10 @@
+.product-detail-page {
+  display: flex;
+  /* or use .u-flex utility */
+}
+.left-column {
+  width: 50%;
+}
+.right-column {
+  width: 50%;
+}

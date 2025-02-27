@@ -1,14 +1,16 @@
 // controllers/productController.js
-const Product = require("../models/product");
+const Product = require('../models/product');
 
 /**
  * Controller chuyên xử lý CRUD cho Product
- * (Phần upload ảnh đã tách riêng trong uploadController.js)
+ * (Upload ảnh tách riêng trong uploadController, 
+ *  nhưng ở create/update vẫn nhận các field mới.)
  */
 const productController = {
   /**
    * Lấy danh sách sản phẩm (có thể search, filter, sort, paginate)
    * @route GET /api/product
+   * @returns { success, products: [...] }
    */
   getProducts: async (req, res) => {
     try {
@@ -18,19 +20,25 @@ const productController = {
       // Tạo object filter
       const filter = {};
 
-      // 1) Tìm theo tên (search)
+      // 1) Tìm theo brand/name (search)
       if (search) {
-        filter.name = { $regex: search, $options: "i" };
+        // regex, case-insensitive => Tìm trong brand hoặc name, tuỳ logic
+        // Ở đây ví dụ filter name:
+        filter.name = { $regex: search, $options: 'i' };
+        // Hoặc: filter.$or = [
+        //   { name: { $regex: search, $options: 'i' } },
+        //   { brand: { $regex: search, $options: 'i' } }
+        // ];
       }
 
-      // 2) Lọc khoảng giá
+      // 2) Lọc khoảng giá (originalPrice, salePrice... tuỳ logic)
       if (minPrice || maxPrice) {
-        filter.price = {};
+        filter.originalPrice = {};
         if (minPrice) {
-          filter.price.$gte = Number(minPrice);
+          filter.originalPrice.$gte = Number(minPrice);
         }
         if (maxPrice) {
-          filter.price.$lte = Number(maxPrice);
+          filter.originalPrice.$lte = Number(maxPrice);
         }
       }
 
@@ -44,12 +52,12 @@ const productController = {
       const limitNum = limit ? parseInt(limit) : 10;
       const skip = (pageNum - 1) * limitNum;
 
-      // 5) Sắp xếp (price_asc / price_desc)
+      // 5) Sắp xếp (vd: sort=price_asc => { originalPrice: 1 })
       let sortObj = {};
-      if (sort === "price_asc") {
-        sortObj.price = 1;
-      } else if (sort === "price_desc") {
-        sortObj.price = -1;
+      if (sort === 'price_asc') {
+        sortObj.originalPrice = 1;
+      } else if (sort === 'price_desc') {
+        sortObj.originalPrice = -1;
       }
 
       // 6) Tìm product
@@ -62,45 +70,89 @@ const productController = {
       return res.json({ success: true, products });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ success: false, message: "Lỗi server" });
+      return res.status(500).json({ success: false, message: 'Lỗi server' });
     }
   },
 
   /**
    * Lấy 1 sản phẩm theo id
    * @route GET /api/product/:id
+   * @returns { success, product }
    */
   getProductById: async (req, res) => {
     try {
       const { id } = req.params;
       const product = await Product.findById(id);
       if (!product) {
-        return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm" });
+        return res
+          .status(404)
+          .json({ success: false, message: 'Không tìm thấy sản phẩm' });
       }
       return res.json({ success: true, product });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ success: false, message: "Lỗi server" });
+      return res.status(500).json({ success: false, message: 'Lỗi server' });
     }
   },
 
   /**
    * Tạo sản phẩm mới
    * @route POST /api/product
-   * Yêu cầu role = admin
+   * Yêu cầu role = admin (tùy logic)
    */
   createProduct: async (req, res) => {
     try {
-      if (req.user.role !== "admin") {
-        return res.status(403).json({ success: false, message: "Không có quyền" });
-      }
-      const { name, price, category } = req.body;
-      const newProduct = new Product({ name, price, category });
+      // Nếu anh có check role:
+      // if (req.user.role !== 'admin') {
+      //   return res.status(403).json({ success: false, message: 'Không có quyền' });
+      // }
+
+      // Lấy các field từ body
+      const {
+        brand,
+        category,
+        size,
+        availability,
+        originalPrice,
+        salePrice,
+        discountInfo,
+        estimatedRetailPrice,
+        condition,
+        conditionDescription,
+        itemID,
+        material,
+        style,
+        sizeFit,
+        shippingReturns,
+        ecoImpact
+      } = req.body;
+
+      // Tạo product mới
+      const newProduct = new Product({
+        brand,
+        category,
+        size,
+        availability,
+        originalPrice,
+        salePrice,
+        discountInfo,
+        estimatedRetailPrice,
+        condition,
+        conditionDescription,
+        itemID,
+        material,
+        style,
+        sizeFit,
+        shippingReturns,
+        ecoImpact,
+        imageURLs: []
+      });
+
       await newProduct.save();
       return res.json({ success: true, product: newProduct });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ success: false, message: "Lỗi server" });
+      return res.status(500).json({ success: false, message: 'Lỗi server' });
     }
   },
 
@@ -111,24 +163,61 @@ const productController = {
    */
   updateProduct: async (req, res) => {
     try {
-      if (req.user.role !== "admin") {
-        return res.status(403).json({ success: false, message: "Không có quyền" });
-      }
+      // if (req.user.role !== 'admin') {
+      //   return res.status(403).json({ success: false, message: 'Không có quyền' });
+      // }
       const { id } = req.params;
-      const { name, price, category } = req.body;
+      const {
+        brand,
+        category,
+        size,
+        availability,
+        originalPrice,
+        salePrice,
+        discountInfo,
+        estimatedRetailPrice,
+        condition,
+        conditionDescription,
+        itemID,
+        material,
+        style,
+        sizeFit,
+        shippingReturns,
+        ecoImpact
+      } = req.body;
 
-      const updatedProduct = await Product.findByIdAndUpdate(
+      const updated = await Product.findByIdAndUpdate(
         id,
-        { name, price, category },
+        {
+          brand,
+          category,
+          size,
+          availability,
+          originalPrice,
+          salePrice,
+          discountInfo,
+          estimatedRetailPrice,
+          condition,
+          conditionDescription,
+          itemID,
+          material,
+          style,
+          sizeFit,
+          shippingReturns,
+          ecoImpact
+        },
         { new: true }
       );
-      if (!updatedProduct) {
-        return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm" });
+
+      if (!updated) {
+        return res
+          .status(404)
+          .json({ success: false, message: 'Không tìm thấy sản phẩm' });
       }
-      return res.json({ success: true, product: updatedProduct });
+      return res.json({ success: true, product: updated });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ success: false, message: "Lỗi server" });
+      return res.status(500).json({ success: false, message: 'Lỗi server' });
     }
   },
 
@@ -139,15 +228,15 @@ const productController = {
    */
   deleteProduct: async (req, res) => {
     try {
-      if (req.user.role !== "admin") {
-        return res.status(403).json({ success: false, message: "Không có quyền" });
-      }
+      // if (req.user.role !== 'admin') {
+      //   return res.status(403).json({ success: false, message: 'Không có quyền' });
+      // }
       const { id } = req.params;
       await Product.findByIdAndDelete(id);
       return res.json({ success: true });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ success: false, message: "Lỗi server" });
+      return res.status(500).json({ success: false, message: 'Lỗi server' });
     }
   },
 };

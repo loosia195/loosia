@@ -24,7 +24,6 @@ function ProductListPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        // Backend trả về { success: true, products: [...] }
         if (res.data.success) {
           setProducts(res.data.products);
         } else {
@@ -37,10 +36,9 @@ function ProductListPage() {
       });
   }, []);
 
-  // Hàm xem chi tiết sản phẩm (nếu anh muốn)
+  // Hàm xem chi tiết sản phẩm
   const handleViewDetail = (productId) => {
-    // Chuyển trang => /product/:id
-    // (Anh có thể dùng useNavigate hoặc Link)
+    // Tạm dùng window.location.href => /product/:id
     window.location.href = `/product/${productId}`;
   };
 
@@ -56,13 +54,19 @@ function ProductListPage() {
         <Grid container spacing={2}>
           {products.map((p) => (
             <Grid item xs={12} sm={6} md={4} key={p._id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                {/* Nếu có nhiều ảnh, ta chỉ hiển thị ảnh đầu, hoặc anh tùy ý */}
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                {/* Hiển thị ảnh đầu tiên nếu có */}
                 {p.imageURLs && p.imageURLs.length > 0 ? (
                   <CardMedia
                     component="img"
                     image={`http://localhost:3000/${p.imageURLs[0]}`}
-                    alt={p.name}
+                    alt={p.brand || 'No brand'}
                     height="160"
                   />
                 ) : (
@@ -80,19 +84,45 @@ function ProductListPage() {
                 )}
 
                 <CardContent sx={{ flexGrow: 1 }}>
+                  {/* Hiển thị brand + category */}
                   <Typography variant="h6" gutterBottom>
-                    {p.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {p.price} VND
+                    {p.brand} - {p.category}
                   </Typography>
 
-                  {/* Nếu anh muốn hiển thị nhiều ảnh:
-                      p.imageURLs.map((imgPath) => ...)
-                      => Tạo 1 gallery nho nhỏ
-                  */}
+                  {/* size + availability */}
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Size: {p.size} 
+                    {p.availability && ` - ${p.availability}`}
+                  </Typography>
+
+                  {/* originalPrice / salePrice */}
+                  {p.originalPrice && (
+                    <Typography variant="body2" color="text.secondary">
+                      Original: {p.originalPrice} VND
+                    </Typography>
+                  )}
+                  {p.salePrice && p.salePrice > 0 && (
+                    <Typography variant="body2" color="error">
+                      Sale: {p.salePrice} VND
+                    </Typography>
+                  )}
+
+                  {/* discountInfo */}
+                  {p.discountInfo && (
+                    <Typography variant="body2" color="text.secondary">
+                      {p.discountInfo}
+                    </Typography>
+                  )}
+
+                  {/* condition */}
+                  {p.condition && (
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      Condition: {p.condition}
+                    </Typography>
+                  )}
                 </CardContent>
 
+                {/* Nút xem chi tiết */}
                 <Button
                   variant="contained"
                   sx={{ m: 2 }}

@@ -1,0 +1,44 @@
+/* ProductDetailInfor.css */
+
+/* .right-column => container chính cột phải */
+.right-column {
+  padding: 16px;
+  /* Nếu muốn background nhạt: */
+  /* background-color: #fafafa; */
+  /* Hoặc border: */
+  /* border-left: 1px solid #ddd; */
+}
+
+/* .product-brands => nếu muốn style component ProductBrands.js */
+.product-brands {
+  margin-bottom: 16px;
+}
+
+/* .product-prices => style cho khối giá */
+.product-prices {
+  margin-bottom: 16px;
+}
+
+/* .product-carts => style cho nút Add to cart */
+.product-carts {
+  margin-bottom: 16px;
+}
+
+/* .product-conditions => style cho condition block */
+.product-conditions {
+  margin-bottom: 16px;
+}
+
+/* ... Tương tự cho item-details, size-fit, sell-with-us, shipping-returns, eco-impact ...
+   .product-item-details, .product-size-fit, .product-sell-with-us, .product-shipping-returns, .product-eco-impacts
+*/
+
+/* Mẫu style cho heading-sm-bold, body-copy-sm, v.v. nếu muốn override */
+.heading-sm-bold {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.body-copy-sm {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}

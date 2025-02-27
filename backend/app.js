@@ -1,4 +1,6 @@
 // app.js
+console.log('>>> Starting app.js');
+
 // 1) IMPORT & SETUP
 //--------------------------------------------------
 const express = require("express");
@@ -91,38 +93,39 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Cho phép truy cập folder uploads
 app.use(
-  '/uploads',
+  "/uploads",
   (req, res, next) => {
-    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    // Cross-Origin-Resource-Policy => fix hiển thị ảnh cross domain
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     next();
   },
-  express.static(path.join(__dirname, 'uploads'))
+  express.static(path.join(__dirname, "uploads"))
 );
 
 // 8) ROUTES
 //--------------------------------------------------
-const auth = require("./middlewares/auth"); // (nếu app.js cần)
+const auth = require("./middlewares/auth"); // nếu cần
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
-const uploadRouter = require('./controllers/uploadController');
-const reviewRoutes = require('./routes/reviewRoutes');
+const uploadRoutes = require("./routes/uploadRoutes"); // <--- import uploadRoutes
+const reviewRoutes = require("./routes/reviewRoutes");
 
+console.log(">>> Setting up /api/upload route..."); // <--- log
 
-// Dùng payment
 app.use("/api/payment", paymentRoutes);
-// Dùng user, product, cart, order
 app.use("/api/user", userRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
-app.use('/api', uploadRouter);
-app.use('/api/product', reviewRoutes);
 
+// Sử dụng uploadRoutes => /api/upload
+app.use("/api/upload", uploadRoutes);
+
+app.use("/api/product", reviewRoutes);
 
 // 9) EXPORT
 //--------------------------------------------------
 module.exports = app;
-

@@ -1,8 +1,10 @@
 // server.js
 //--------------------------------------------------
+console.log('>>> Starting server.js');
 
 // 1) IMPORT APP
 //--------------------------------------------------
+
 const app = require('./app'); 
 // Chú ý: Đường dẫn "./app" nếu server.js cùng folder với app.js
 // Nếu anh đặt app.js ở same folder, thì "./app" là đúng.

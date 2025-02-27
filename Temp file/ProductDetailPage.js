@@ -142,18 +142,91 @@ function ProductDetailPage() {
         Product Detail
       </Typography>
 
+      {/* Thông tin chính */}
       <Typography variant="h6" gutterBottom>
-        {product.name} - {product.price} VND
+        {product.brand} - {product.category} 
       </Typography>
-      <Typography variant="body1" gutterBottom>
-        Category: {product.category}
-      </Typography>
+      {product.size && product.availability && (
+        <Typography variant="body2" gutterBottom>
+          Size: {product.size} - {product.availability}
+        </Typography>
+      )}
+
+      {/* Original / Sale price */}
+      {product.originalPrice && (
+        <Typography variant="body2">
+          Original Price: {product.originalPrice} VND
+        </Typography>
+      )}
+      {product.salePrice && product.salePrice > 0 && (
+        <Typography variant="body2" color="error">
+          Sale Price: {product.salePrice} VND
+        </Typography>
+      )}
+      {product.discountInfo && (
+        <Typography variant="body2">
+          Discount Info: {product.discountInfo}
+        </Typography>
+      )}
+      {product.estimatedRetailPrice && product.estimatedRetailPrice > 0 && (
+        <Typography variant="body2">
+          Estimated Retail: {product.estimatedRetailPrice} 
+        </Typography>
+      )}
+
+      {/* Condition */}
+      {product.condition && (
+        <Typography variant="body2" sx={{ mt: 1 }}>
+          Condition: {product.condition}
+        </Typography>
+      )}
+      {product.conditionDescription && (
+        <Typography variant="body2">
+          {product.conditionDescription}
+        </Typography>
+      )}
+
+      {/* Item details */}
+      {product.itemID && (
+        <Typography variant="body2">
+          Item ID: {product.itemID}
+        </Typography>
+      )}
+      {product.material && (
+        <Typography variant="body2">
+          Material: {product.material}
+        </Typography>
+      )}
+      {product.style && (
+        <Typography variant="body2">
+          Style: {product.style}
+        </Typography>
+      )}
+      {product.sizeFit && (
+        <Typography variant="body2">
+          Size & Fit: {product.sizeFit}
+        </Typography>
+      )}
+
+      {/* Shipping & Returns */}
+      {product.shippingReturns && (
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          <strong>Shipping & Returns:</strong> {product.shippingReturns}
+        </Typography>
+      )}
+
+      {/* Eco Impact */}
+      {product.ecoImpact && (
+        <Typography variant="body2" sx={{ mt: 1 }}>
+          <strong>Eco Impact:</strong> {product.ecoImpact}
+        </Typography>
+      )}
 
       {/* Nút Thêm vào giỏ */}
       <Button
         variant="contained"
         color="primary"
-        sx={{ mb: 2 }}
+        sx={{ mt: 2 }}
         onClick={handleAddToCart}
       >
         Thêm vào giỏ
@@ -161,7 +234,7 @@ function ProductDetailPage() {
 
       {/* Hiển thị nhiều ảnh + nút Xoá ảnh */}
       {product.imageURLs && product.imageURLs.length > 0 ? (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 2 }}>
           {product.imageURLs.map((imgPath, idx) => (
             <Paper
               key={idx}

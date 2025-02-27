@@ -89,9 +89,6 @@ router.post(
  * 3) Route upload nhiều ảnh (multiple)
  *    - Dành cho trường hợp Product có mảng "imageURLs: [String]"
  *    - Mặc định: "push" thêm ảnh mới vào mảng
- *    - Nếu muốn thay thế toàn bộ, anh có thể:
- *        1) Xoá file cũ => product.imageURLs.forEach(...) fs.unlinkSync(...)
- *        2) product.imageURLs = newImagePaths;
  */
 router.post(
   '/product/:id/uploadImages',
@@ -118,13 +115,6 @@ router.post(
         product.imageURLs = [];
       }
       product.imageURLs.push(...newImagePaths);
-
-      // (Nếu thay thế toàn bộ, ví dụ):
-      // product.imageURLs.forEach((oldPath) => {
-      //   const absPath = path.join(__dirname, '..', oldPath);
-      //   if (fs.existsSync(absPath)) fs.unlinkSync(absPath);
-      // });
-      // product.imageURLs = newImagePaths;
 
       await product.save();
 
