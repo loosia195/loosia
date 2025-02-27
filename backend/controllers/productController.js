@@ -124,7 +124,8 @@ const productController = {
         style,
         sizeFit,
         shippingReturns,
-        ecoImpact
+        ecoImpact,
+        images
       } = req.body;
 
       // Tạo product mới
@@ -145,7 +146,7 @@ const productController = {
         sizeFit,
         shippingReturns,
         ecoImpact,
-        imageURLs: []
+        imageURLs: images
       });
 
       await newProduct.save();
