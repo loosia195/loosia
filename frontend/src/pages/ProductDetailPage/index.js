@@ -2,39 +2,40 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom'; // <--- Dùng useParams
 import LeftColumn from './LeftColumn';
 import RightColumn from './RightColumn';
 import './ProductDetailPage.css';
 
 /**
  * Trang chi tiết sản phẩm (ProductDetailPage):
- * - Lấy productId từ match.params.id (React Router v5 style)
- * - Gọi GET http://localhost:3000/api/product/:id kèm token
+ * - Lấy id từ useParams() (React Router v6 style)
+ * - Gọi GET http://localhost:3000/api/product/:id kèm token (nếu cần)
  * - Hiển thị cột trái (LeftColumn) và cột phải (RightColumn)
  */
 
-function ProductDetailPage({ match }) {
-  // Lấy id từ match.params
-  const productId = match?.params?.id;
+function ProductDetailPage() {
+  // Lấy id từ useParams
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    // Nếu productId undefined => không gọi API
-    if (!productId) return;
+    // Nếu id undefined => không gọi API
+    if (!id) return;
 
     // Lấy token từ localStorage
     const token = localStorage.getItem('token');
-
-    // Tạo config header Authorization
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     };
+
+    console.log("useEffect triggered, id =", id); // debug
 
     // Gọi API GET /api/product/:id
     axios
-      .get(`http://localhost:3000/api/product/${productId}`, config)
+      .get(`http://localhost:3000/api/product/${id}`, config)
       .then((res) => {
         if (res.data.success) {
           setProduct(res.data.product);
@@ -45,7 +46,7 @@ function ProductDetailPage({ match }) {
       .catch((err) => {
         console.error('Lỗi khi tải chi tiết sản phẩm:', err);
       });
-  }, [productId]);
+  }, [id]);
 
   if (!product) {
     return <div>Loading product details...</div>;
@@ -53,8 +54,8 @@ function ProductDetailPage({ match }) {
 
   return (
     <div className="product-detail-page u-flex">
-      {/* Cột trái hiển thị ảnh sản phẩm */}
-      <LeftColumn images={product.images || []} />
+      {/* Cột trái hiển thị ảnh sản phẩm (nếu code cột trái) */}
+      <LeftColumn images={product.imageURLs || []} />
 
       {/* Cột phải hiển thị thông tin (brand, price, condition, v.v.) */}
       <RightColumn product={product} />
@@ -63,4 +64,3 @@ function ProductDetailPage({ match }) {
 }
 
 export default ProductDetailPage;
-
