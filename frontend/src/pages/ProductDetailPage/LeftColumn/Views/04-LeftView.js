@@ -1,16 +1,29 @@
-// ProductDetailPage/LeftColumn/Thumbnails/BackView.js
+// ProductDetailPage/LeftColumn/Thumbnails/04-LeftView.js
 import React from 'react';
 
-function BackView({
+/**
+ * Props:
+ *  - onClick: function => click thumbnail
+ *  - isActive: boolean => highlight
+ *  - thumbUrl: string => link ảnh
+ *  - altText: string => default "Left view image"
+ *  - overlayIcon: string => optional icon overlay
+ */
+
+function LeftView({
   onClick,
   isActive = false,
-  thumbUrl,
-  altText = 'Back view image',
-  overlayIcon
+  thumbUrl = '',
+  altText = 'Left view image',
+  overlayIcon,
 }) {
   const imgClass = isActive
     ? 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-black u-opacity-100'
     : 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-transparent u-opacity-60';
+
+  if (!thumbUrl) {
+    return null;
+  }
 
   return (
     <button
@@ -38,4 +51,4 @@ function BackView({
   );
 }
 
-export default BackView;
+export default LeftView;

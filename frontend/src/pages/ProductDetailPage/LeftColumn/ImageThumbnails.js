@@ -1,5 +1,6 @@
 // ProductDetailPage/LeftColumn/ImageThumbnails.js
 
+import React from 'react';
 import FrontView from './Views/01-FrontView';
 import BackView from './Views/02-BackView';
 import RightView from './Views/03-RightView';
@@ -7,18 +8,32 @@ import LeftView from './Views/04-LeftView';
 import TopTagView from './Views/05-TopTagView';
 import BottomTagView from './Views/06-BottomTagView';
 import ThreeDView from './Views/07-ThreeView';
+import './ImageThumbnails.css';
 
 /**
+ * Mô hình aggregator:
+ *  - `images` = array of objects: { type, thumbUrl, altText, overlayIcon, ... }
+ *  - Mỗi object mô tả 1 vantage point (front, back, etc.)
+ *  - Ta render vantage point component tuỳ theo `type`
+ *
  * Props:
  *  - images: array of { type, thumbUrl, altText, overlayIcon, ... }
  *  - selectedIndex: number (thumbnail đang chọn)
- *  - onSelect: function(idx) => click thumbnail => đổi ảnh
+ *  - onSelect: function(idx) => click thumbnail => đổi ảnh chính
  */
 
 function ImageThumbnails({ images, selectedIndex, onSelect }) {
+  if (!images || images.length === 0) {
+    return <div>No thumbnails</div>;
+  }
+
   return (
     <div className="u-flex u-flex-col u-gap-1x u-overflow-y-auto thumb-list">
       {images.map((img, idx) => {
+        // fallback altText, overlayIcon
+        const altText = img.altText || `Thumbnail ${idx + 1}`;
+        const overlayIcon = img.overlayIcon || null;
+
         switch (img.type) {
           case 'front':
             return (
@@ -27,8 +42,8 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
                 onClick={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
-                altText={img.altText}
-                overlayIcon={img.overlayIcon}
+                altText={altText}
+                overlayIcon={overlayIcon}
               />
             );
           case 'back':
@@ -38,8 +53,8 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
                 onClick={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
-                altText={img.altText}
-                overlayIcon={img.overlayIcon}
+                altText={altText}
+                overlayIcon={overlayIcon}
               />
             );
           case 'right':
@@ -49,8 +64,8 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
                 onClick={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
-                altText={img.altText}
-                overlayIcon={img.overlayIcon}
+                altText={altText}
+                overlayIcon={overlayIcon}
               />
             );
           case 'left':
@@ -60,8 +75,8 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
                 onClick={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
-                altText={img.altText}
-                overlayIcon={img.overlayIcon}
+                altText={altText}
+                overlayIcon={overlayIcon}
               />
             );
           case 'topTag':
@@ -71,8 +86,8 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
                 onClick={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
-                altText={img.altText}
-                overlayIcon={img.overlayIcon}
+                altText={altText}
+                overlayIcon={overlayIcon}
               />
             );
           case 'bottomTag':
@@ -82,8 +97,8 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
                 onClick={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
-                altText={img.altText}
-                overlayIcon={img.overlayIcon}
+                altText={altText}
+                overlayIcon={overlayIcon}
               />
             );
           case '3d':
@@ -93,12 +108,12 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
                 onClick={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
-                altText={img.altText}
-                overlayIcon={img.overlayIcon}
+                altText={altText}
+                overlayIcon={overlayIcon}
               />
             );
           default:
-            // fallback: if type not matched, or no vantage type
+            // fallback: nếu type không khớp => không render
             return null;
         }
       })}

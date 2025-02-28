@@ -1,16 +1,29 @@
-// ProductDetailPage/LeftColumn/Thumbnails/LeftView.js
+// ProductDetailPage/LeftColumn/Thumbnails/03-RightView.js
 import React from 'react';
 
-function LeftView({
+/**
+ * Props:
+ *  - onClick: function => gọi khi user click thumbnail
+ *  - isActive: boolean => thumbnail đang được chọn
+ *  - thumbUrl: string => link ảnh
+ *  - altText: string => alt cho <img>, default "Right view image"
+ *  - overlayIcon: string => link icon overlay (nếu cần)
+ */
+
+function RightView({
   onClick,
   isActive = false,
-  thumbUrl,
-  altText = 'Left view image',
-  overlayIcon
+  thumbUrl = '',
+  altText = 'Right view image',
+  overlayIcon,
 }) {
   const imgClass = isActive
     ? 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-black u-opacity-100'
     : 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-transparent u-opacity-60';
+
+  if (!thumbUrl) {
+    return null;
+  }
 
   return (
     <button
@@ -38,5 +51,6 @@ function LeftView({
   );
 }
 
-export default LeftView;
+export default RightView;
+
 

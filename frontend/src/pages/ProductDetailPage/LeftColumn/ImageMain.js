@@ -7,26 +7,32 @@ import ImageLook from './ImageLook';
 
 /**
  * Props:
- *  - image: object => { urlLarge, alt, ... }
+ *  - imageUrl (string) => URL ảnh chính
+ *  - altText (string) => alt cho ảnh (optional)
  *  - onNext(): callback next
  *  - onPrev(): callback prev
  *  - disabledNext: boolean
  *  - disabledPrev: boolean
  *  - onFavorite(): callback favorite
  *  - favoriteCount: number
- *  - lookLink (string) => link “Shop look” (trước là “Shop similar”)
+ *  - lookLink (string) => link “Shop look” (hoặc “Shop similar”)
  */
+
 function ImageMain({
-  image,
+  imageUrl,
+  altText = 'Main product image',
   onNext,
   onPrev,
   disabledNext,
   disabledPrev,
   onFavorite,
   favoriteCount,
-  lookLink
+  lookLink,
 }) {
-  if (!image) return null;
+  if (!imageUrl) {
+    // Nếu không có URL => không hiển thị
+    return null;
+  }
 
   return (
     <div
@@ -36,9 +42,9 @@ function ImageMain({
     >
       {/* Ảnh chính */}
       <img
-        alt={image.alt || 'Main product image'}
+        alt={altText}
         className="u-rounded-4 u-block u-cursor-pointer main-image"
-        src={image.urlLarge}
+        src={imageUrl}
         width="612"
         height="821"
       />
@@ -47,7 +53,7 @@ function ImageMain({
       <div
         className="u-rounded-4 main-image-overlay"
         style={{
-          backgroundImage: `url(${image.urlLarge})`,
+          backgroundImage: `url(${imageUrl})`,
           backgroundPosition: 'center',
           backgroundSize: 'cover',
           opacity: 0.1,
@@ -56,7 +62,7 @@ function ImageMain({
           top: 0,
           left: 0,
           right: 0,
-          bottom: 0
+          bottom: 0,
         }}
       />
 
@@ -81,4 +87,3 @@ function ImageMain({
 }
 
 export default ImageMain;
-

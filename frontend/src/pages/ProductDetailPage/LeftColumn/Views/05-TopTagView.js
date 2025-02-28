@@ -1,16 +1,29 @@
-// ProductDetailPage/LeftColumn/Thumbnails/FrontView.js
+// ProductDetailPage/LeftColumn/Thumbnails/05-TopTagView.js
 import React from 'react';
 
-function FrontView({
+/**
+ * Props:
+ *  - onClick
+ *  - isActive
+ *  - thumbUrl
+ *  - altText => default "Top Tag view image"
+ *  - overlayIcon
+ */
+
+function TopTagView({
   onClick,
   isActive = false,
-  thumbUrl,
-  altText = 'Front view image',
-  overlayIcon
+  thumbUrl = '',
+  altText = 'Top Tag view image',
+  overlayIcon,
 }) {
   const imgClass = isActive
     ? 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-black u-opacity-100'
     : 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-transparent u-opacity-60';
+
+  if (!thumbUrl) {
+    return null;
+  }
 
   return (
     <button
@@ -38,5 +51,6 @@ function FrontView({
   );
 }
 
-export default FrontView;
+export default TopTagView;
+
 

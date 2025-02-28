@@ -1,16 +1,29 @@
-// ProductDetailPage/LeftColumn/Thumbnails/TopTagView.js
+// ProductDetailPage/LeftColumn/Thumbnails/06-BottomTagView.js
 import React from 'react';
 
-function TopTagView({
+/**
+ * Props:
+ *  - onClick
+ *  - isActive
+ *  - thumbUrl
+ *  - altText => default "Bottom Tag view image"
+ *  - overlayIcon
+ */
+
+function BottomTagView({
   onClick,
   isActive = false,
-  thumbUrl,
-  altText = 'Top tag view image',
-  overlayIcon
+  thumbUrl = '',
+  altText = 'Bottom Tag view image',
+  overlayIcon,
 }) {
   const imgClass = isActive
     ? 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-black u-opacity-100'
     : 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-transparent u-opacity-60';
+
+  if (!thumbUrl) {
+    return null;
+  }
 
   return (
     <button
@@ -38,5 +51,4 @@ function TopTagView({
   );
 }
 
-export default TopTagView;
-
+export default BottomTagView;

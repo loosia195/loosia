@@ -7,28 +7,40 @@ import './ProductImagesGallery.css';
 
 /**
  * Props:
- *  - images: array of { type, thumbUrl, urlLarge, alt, overlayIcon, ... }
- *  - stickyTop: number (px offset for sticky)
+ *  - images: array of string (e.g. ["http://.../img1.jpg", "http://.../img2.jpg", ...])
+ *  - stickyTop: number => px offset for sticky
+ *
+ * Logic:
+ * 1) selectedIndex => ảnh hiện tại
+ * 2) handleNext / handlePrev => di chuyển index
+ * 3) currentImageUrl = images[selectedIndex]
+ * 4) Truyền images xuống <ImageThumbnails> => hiển thị list
+ * 5) Truyền currentImageUrl => <ImageMain> => hiển thị ảnh lớn
  */
 
 function ProductImagesGallery({ images, stickyTop = 72 }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Next/Prev
+  // Ảnh hiện tại => URL
+  const currentImageUrl = images[selectedIndex] || '';
+
+  // Next
   const handleNext = () => {
     if (selectedIndex < images.length - 1) {
       setSelectedIndex(selectedIndex + 1);
     }
   };
 
+  // Prev
   const handlePrev = () => {
     if (selectedIndex > 0) {
       setSelectedIndex(selectedIndex - 1);
     }
   };
 
-  // Ảnh hiện tại
-  const currentImage = images[selectedIndex];
+  // Disabled logic
+  const disabledNext = (selectedIndex === images.length - 1);
+  const disabledPrev = (selectedIndex === 0);
 
   return (
     <div
@@ -39,7 +51,7 @@ function ProductImagesGallery({ images, stickyTop = 72 }) {
         {/* Thumbnails cột trái */}
         <div className="thumbs-col">
           <ImageThumbnails
-            images={images}
+            images={images}            // array of strings
             selectedIndex={selectedIndex}
             onSelect={(idx) => setSelectedIndex(idx)}
           />
@@ -48,11 +60,11 @@ function ProductImagesGallery({ images, stickyTop = 72 }) {
         {/* Main image cột phải */}
         <div className="main-col">
           <ImageMain
-            image={currentImage}
+            imageUrl={currentImageUrl}  // URL ảnh
             onNext={handleNext}
             onPrev={handlePrev}
-            disabledNext={selectedIndex === images.length - 1}
-            disabledPrev={selectedIndex === 0}
+            disabledNext={disabledNext}
+            disabledPrev={disabledPrev}
             onFavorite={() => alert('Favorited!')}
             favoriteCount={24}
             lookLink="/look"
@@ -64,4 +76,3 @@ function ProductImagesGallery({ images, stickyTop = 72 }) {
 }
 
 export default ProductImagesGallery;
-

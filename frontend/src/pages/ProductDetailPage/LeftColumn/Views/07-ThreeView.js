@@ -1,16 +1,29 @@
-// ProductDetailPage/LeftColumn/Thumbnails/BottomTagView.js
+// ProductDetailPage/LeftColumn/Thumbnails/07-ThreeView.js
 import React from 'react';
 
-function BottomTagView({
+/**
+ * Props:
+ *  - onClick
+ *  - isActive
+ *  - thumbUrl
+ *  - altText => default "3D / 360 view image"
+ *  - overlayIcon
+ */
+
+function ThreeDView({
   onClick,
   isActive = false,
-  thumbUrl,
-  altText = 'Bottom tag view image',
-  overlayIcon
+  thumbUrl = '',
+  altText = '3D / 360 view image',
+  overlayIcon,
 }) {
   const imgClass = isActive
     ? 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-black u-opacity-100'
     : 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-transparent u-opacity-60';
+
+  if (!thumbUrl) {
+    return null;
+  }
 
   return (
     <button
@@ -38,5 +51,4 @@ function BottomTagView({
   );
 }
 
-export default BottomTagView;
-
+export default ThreeDView;
