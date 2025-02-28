@@ -13,6 +13,7 @@ import React from 'react';
 
 function BackView({
   onClick,
+  onMouseEnter,
   isActive = false,
   thumbUrl = '',
   altText = 'Back view image',
@@ -34,6 +35,7 @@ function BackView({
       aria-label={altText}
       className={`thumbnail-btn ${isActive ? 'active' : ''} u-cursor-default`}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
     >
       <img
         alt={altText}

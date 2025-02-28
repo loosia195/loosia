@@ -12,6 +12,7 @@ import React from 'react';
 
 function ThreeDView({
   onClick,
+  onMouseEnter,
   isActive = false,
   thumbUrl = '',
   altText = '3D / 360 view image',
@@ -31,6 +32,7 @@ function ThreeDView({
       aria-label={altText}
       className={`thumbnail-btn ${isActive ? 'active' : ''} u-cursor-default`}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
     >
       <img
         alt={altText}

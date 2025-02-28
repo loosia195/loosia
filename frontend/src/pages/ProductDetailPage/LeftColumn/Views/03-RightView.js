@@ -12,6 +12,7 @@ import React from 'react';
 
 function RightView({
   onClick,
+  onMouseEnter,
   isActive = false,
   thumbUrl = '',
   altText = 'Right view image',
@@ -31,6 +32,7 @@ function RightView({
       aria-label={altText}
       className={`thumbnail-btn ${isActive ? 'active' : ''} u-cursor-default`}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
     >
       <img
         alt={altText}

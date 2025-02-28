@@ -61,7 +61,7 @@ function AddProductPage() {
     try {
       // Lấy token (VD: user đăng nhập => localStorage.setItem("token", ...)
       const token = localStorage.getItem('token');
-
+      console.log("images array to server:", images);
       // Gọi API => kèm Authorization header
       const res = await axios.post('http://localhost:3000/api/product', newProduct, {
         headers: {

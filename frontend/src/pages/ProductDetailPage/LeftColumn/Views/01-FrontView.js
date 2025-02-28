@@ -13,6 +13,7 @@ import React from 'react';
 
 function FrontView({
   onClick,
+  onMouseEnter,
   isActive = false,
   thumbUrl = '',
   altText = 'Front view image',
@@ -34,6 +35,7 @@ function FrontView({
       aria-label={altText}
       className={`thumbnail-btn ${isActive ? 'active' : ''} u-cursor-default`}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
     >
       <img
         alt={altText}

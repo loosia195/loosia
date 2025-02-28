@@ -12,6 +12,7 @@ import React from 'react';
 
 function LeftView({
   onClick,
+  onMouseEnter,
   isActive = false,
   thumbUrl = '',
   altText = 'Left view image',
@@ -31,6 +32,7 @@ function LeftView({
       aria-label={altText}
       className={`thumbnail-btn ${isActive ? 'active' : ''} u-cursor-default`}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
     >
       <img
         alt={altText}

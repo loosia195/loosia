@@ -41,6 +41,7 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
               <FrontView
                 key={idx}
                 onClick={() => onSelect(idx)}
+                onMouseEnter={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
                 altText={altText}
@@ -52,6 +53,7 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
               <BackView
                 key={idx}
                 onClick={() => onSelect(idx)}
+                onMouseEnter={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
                 altText={altText}
@@ -63,6 +65,7 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
               <RightView
                 key={idx}
                 onClick={() => onSelect(idx)}
+                onMouseEnter={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
                 altText={altText}
@@ -74,6 +77,7 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
               <LeftView
                 key={idx}
                 onClick={() => onSelect(idx)}
+                onMouseEnter={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
                 altText={altText}
@@ -85,6 +89,7 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
               <TopTagView
                 key={idx}
                 onClick={() => onSelect(idx)}
+                onMouseEnter={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
                 altText={altText}
@@ -96,6 +101,7 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
               <BottomTagView
                 key={idx}
                 onClick={() => onSelect(idx)}
+                onMouseEnter={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
                 altText={altText}
@@ -107,6 +113,7 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
               <ThreeDView
                 key={idx}
                 onClick={() => onSelect(idx)}
+                onMouseEnter={() => onSelect(idx)}
                 isActive={idx === selectedIndex}
                 thumbUrl={img.thumbUrl}
                 altText={altText}

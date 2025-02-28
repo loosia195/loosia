@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 
 // (Nếu anh có sẵn createProduct, uploadMultipleImages in productService)
-import { createProduct, uploadMultipleImages } from '../services/productService';
+import { createProduct, uploadMultipleImages } from '../frontend/src/services/productService';
 
 function AddProductPage() {
   // 1) Basic Info
