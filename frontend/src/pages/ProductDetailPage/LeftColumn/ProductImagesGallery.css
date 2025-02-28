@@ -1,25 +1,44 @@
-/* Container cột trái: sticky, top 72px */
+/* product-images-gallery => toàn bộ container (968×816) 
+   sticky => top:72px, dịch sang phải 120px => margin-left:120px
+*/
 .product-images-gallery {
   position: sticky;
   top: 72px;
+  width: 968px;       /* tổng chiều ngang ThredUp */
+  height: 816px;      /* tổng chiều cao ThredUp */
+  margin-left: 120px; /* dịch toàn bộ khối sang phải 120px */
   margin-bottom: 8px; /* u-mb-3xs ~ 8px */
+  overflow: hidden;   /* tránh tràn */
+  background-color: #fff; /* debug color, tuỳ ý */
 }
 
-/* .gallery-wrapper => flex layout chia thumbnails + main image */
+/* .gallery-wrapper => flex: cột trái (thumbnails) + main image */
 .gallery-wrapper {
   display: flex;
-  gap: 1rem; /* ~16px */
-  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  /* không dùng gap, vì ta có 148px margin trong .main-col */
 }
 
-/* .thumbs-col => cột trái, chứa danh sách thumbnail (vertical) */
+/* .thumbs-col => cột trái, 60×816 */
 .thumbs-col {
-  width: 80px;           /* chiều rộng cột thumbnails */
-  max-height: 600px;     /* giới hạn chiều cao, tuỳ ý */
-  overflow-y: auto;      /* cuộn dọc nếu nhiều ảnh */
+  width: 60px;
+  height: 816px;
+  overflow-y: auto;  /* cuộn dọc nếu nhiều ảnh */
+  flex-shrink: 0;    /* đừng thu hẹp cột thumbnails */
 }
 
-/* .thumbnail-btn => style cho mỗi button thumbnail */
+/* .main-col => main image 612×816, margin-left 148px, margin-right 148px */
+.main-col {
+  position: relative;
+  width: 612px;
+  height: 816px;
+  margin-left: 148px; /* gap trái giữa thumbs & main */
+  margin-right: 148px;/* gap phải => total 968px */
+  flex-shrink: 0;
+}
+
+/* .thumbnail-btn => style chung cho button thumbnail */
 .thumbnail-btn {
   border: none;
   background: none;
@@ -28,7 +47,6 @@
   margin: 0;
   padding: 0;
   position: relative;
-  /* Có thể thêm margin-bottom: 8px nếu muốn cách ảnh */
 }
 
 /* .thumbnail-btn img => style chung cho ảnh thumbnail */
@@ -36,46 +54,39 @@
   display: block;
   border-radius: 4px;
   width: 60px;
-  height: 80px;
+  height: 8%;
   transition: border-color 0.2s, opacity 0.2s;
 }
 
-/* Hover effect: khi rê chuột lên thumbnail */
+/* Hover effect thumbnail */
 .thumbnail-btn:hover img {
-  border-color: #ccc !important; /* override border color */
+  border-color: #ccc !important;
   opacity: 0.8 !important;
 }
 
-/* .main-col => cột phải (ảnh chính) */
-.main-col {
-  flex: 1;
-  position: relative; /* cho overlay arrow, etc. */
-  max-width: 612px;
-  max-height: 816px;
+/* Active thumbnail => viền đen, opacity=1 */
+.thumbnail-btn.active img {
+  border: 1px solid #000 !important;
+  opacity: 1 !important;
 }
 
-/* .main-image-container => container chính cho ảnh + overlay */
+/* .main-image-container => container ảnh chính + overlay zoom */
 .main-image-container {
   position: relative;
-  height: 100%;
+  width: 100%;   /* ~612px */
+  height: 100%;  /* ~816px */
+  cursor: zoom-in;
 }
 
 /* .main-image => ảnh chính */
 .main-image {
+  display: block;
   width: 100%;
   height: auto;
-  display: block;
   border-radius: 4px;
-  width: 100%;  /* hoặc 612px, tuỳ ý */
-  height: auto;
-  cursor: pointer;
-  .main-image { cursor: inherit; }
+  transition: opacity 0.2s;
 }
 
-.main-image-container:hover .main-image {
-  transform: scale(1.1);
-
-}
 /* .main-image-overlay => layer overlay (mờ 10%) */
 .main-image-overlay {
   position: absolute;
@@ -85,42 +96,20 @@
   background-position: center;
   background-size: cover;
   border-radius: 4px;
+  transition: opacity 0.2s;
 }
 
-/* Nút next/prev (góc dưới phải) => .navigation-container */
+/* next/prev arrow => góc dưới phải */
 .navigation-container {
   position: absolute;
   right: 8px;
   bottom: 8px;
   display: flex;
   gap: 8px;
-  z-index: 1; /* nổi trên ảnh */
+  z-index: 1;
 }
 
-/* .ui-button-floating => style cho button arrow, shop-similar, v.v. */
-.ui-button-floating {
-  border: none;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 9999px; /* hình tròn */
-  padding: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Hover: thay đổi màu nền */
-.ui-button-floating:hover {
-  background-color: rgba(255, 255, 255, 1);
-}
-
-/* .ui-button-floating.inverted => tuỳ chỉnh, ví dụ: bo tròn, background mờ hơn */
-.ui-button-floating.inverted {
-  background-color: rgba(255, 255, 255, 0.7);
-}
-
-/* top-right => shop-similar, favorite => góc trên phải */
+/* shop-similar + favorite => góc trên phải */
 .u-top-1x.u-right-1x {
   position: absolute;
   top: 8px;
@@ -130,8 +119,21 @@
   z-index: 1;
 }
 
-/* Active thumbnail => viền đen, opacity=1 */
-.thumbnail-btn.active img {
-  border: 1px solid #000 !important;
-  opacity: 1 !important;
+/* .ui-button-floating => arrow circle, v.v. */
+.ui-button-floating {
+  border: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 9999px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ui-button-floating:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+.ui-button-floating.inverted {
+  background-color: rgba(255, 255, 255, 0.7);
 }
