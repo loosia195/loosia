@@ -6,61 +6,80 @@ import ImageMain from './ImageMain';
 import './ProductImagesGallery.css';
 
 /**
- * Props:
- *  - images: array of string (e.g. ["http://.../img1.jpg", "http://.../img2.jpg", ...])
- *  - stickyTop: number => px offset for sticky
- *
- * Logic:
- * 1) selectedIndex => ảnh hiện tại
- * 2) handleNext / handlePrev => di chuyển index
- * 3) currentImageUrl = images[selectedIndex]
- * 4) Truyền images xuống <ImageThumbnails> => hiển thị list
- * 5) Truyền currentImageUrl => <ImageMain> => hiển thị ảnh lớn
+ * Mảng `images` => array of string (VD: [ "http://.../img1.jpg", "http://.../img2.jpg" ])
+ * HOẶC => array of objects { type, thumbUrl, ... } => tuỳ DB
+ * 
+ * selectedIndex => state => main image
+ * vantagePoints => cứng: [ front, back, right, left, topTag, bottomTag, 3d ]
  */
 
 function ProductImagesGallery({ images, stickyTop = 72 }) {
+  // 1) Tạo vantagePoints cứng (nếu DB chỉ trả array string)
+  const vantagePoints = [
+    { type: 'front' },
+    { type: 'back' },
+    { type: 'right' },
+    { type: 'left' },
+    { type: 'topTag' },
+    { type: 'bottomTag' },
+    { type: '3d' },
+  ];
+
+  // 2) Gộp vantagePoints + images => vantageImages
+  //    Mỗi vantage point => vantageImages[i] = { type, thumbUrl: images[i] }
+  const vantageImages = vantagePoints.map((vp, idx) => {
+    // images[idx] có thể undefined => fallback ''
+    const url = images[idx] || '';
+    return {
+      ...vp,
+      thumbUrl: url,
+      altText: `${vp.type} view image`,
+      // overlayIcon: ... // if needed
+    };
+  });
+
+  // 3) selectedIndex => hiển thị vantageImages[selectedIndex]
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const currentImageObj = vantageImages[selectedIndex] || {};
 
-  // Ảnh hiện tại => URL
-  const currentImageUrl = images[selectedIndex] || '';
-
-  // Next
+  // Next/Prev
   const handleNext = () => {
-    if (selectedIndex < images.length - 1) {
+    if (selectedIndex < vantageImages.length - 1) {
       setSelectedIndex(selectedIndex + 1);
     }
   };
-
-  // Prev
   const handlePrev = () => {
     if (selectedIndex > 0) {
       setSelectedIndex(selectedIndex - 1);
     }
   };
 
-  // Disabled logic
-  const disabledNext = (selectedIndex === images.length - 1);
+  const disabledNext = (selectedIndex === vantageImages.length - 1);
   const disabledPrev = (selectedIndex === 0);
+
+  // 4) imageUrl => main image
+  // vantage points code => `thumbUrl` or `urlLarge`
+  const imageUrl = currentImageObj.thumbUrl || '';
 
   return (
     <div
-      className="product-images-gallery u-sticky"
-      style={{ top: `${stickyTop}px` }}
+      className="product-images-gallery"
+      style={{ position: 'sticky', top: stickyTop }}
     >
-      <div className="u-flex u-gap-2x u-justify-between gallery-wrapper">
-        {/* Thumbnails cột trái */}
+      <div className="gallery-wrapper">
+        {/* Bên trái: Thumbnails (vertical) */}
         <div className="thumbs-col">
           <ImageThumbnails
-            images={images}            // array of strings
+            images={vantageImages}       // array of objects
             selectedIndex={selectedIndex}
             onSelect={(idx) => setSelectedIndex(idx)}
           />
         </div>
 
-        {/* Main image cột phải */}
+        {/* Bên phải: Main Image */}
         <div className="main-col">
           <ImageMain
-            imageUrl={currentImageUrl}  // URL ảnh
+            imageUrl={imageUrl}
             onNext={handleNext}
             onPrev={handlePrev}
             disabledNext={disabledNext}

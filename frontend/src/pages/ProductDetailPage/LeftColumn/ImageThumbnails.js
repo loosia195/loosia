@@ -1,13 +1,13 @@
 // ProductDetailPage/LeftColumn/ImageThumbnails.js
 
 import React from 'react';
-import FrontView from './Views/01-FrontView';
-import BackView from './Views/02-BackView';
-import RightView from './Views/03-RightView';
-import LeftView from './Views/04-LeftView';
-import TopTagView from './Views/05-TopTagView';
-import BottomTagView from './Views/06-BottomTagView';
-import ThreeDView from './Views/07-ThreeView';
+import FrontView from './Views/01-FrontView.js';
+import BackView from './Views/02-BackView.js';
+import RightView from './Views/03-RightView.js';
+import LeftView from './Views/04-LeftView.js';
+import TopTagView from './Views/05-TopTagView.js';
+import BottomTagView from './Views/06-BottomTagView.js';
+import ThreeDView from './Views/07-ThreeView.js';
 import './ImageThumbnails.css';
 
 /**
