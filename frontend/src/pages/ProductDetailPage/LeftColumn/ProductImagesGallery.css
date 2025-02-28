@@ -1,105 +1,137 @@
-/* product-images-gallery => container cột trái */
+/* Container cột trái: sticky, top 72px */
 .product-images-gallery {
-    /* ThredUp style: sticky, top 72px */
-    position: sticky;
-    top: 72px;
-  }
-  
-  /* .gallery-wrapper => flex layout chia thumbnails + main image */
-  .gallery-wrapper {
-    display: flex;
-    gap: 1rem; /* hoặc 16px */
-    justify-content: space-between;
-  }
-  
-  /* .thumbs-col => cột trái, chứa danh sách thumbnail */
-  .thumbs-col {
-    width: 80px; /* chiều rộng cột thumbnails */
-    max-height: 600px; /* giới hạn chiều cao */
-    overflow-y: auto;  /* cho phép cuộn nếu nhiều ảnh */
-  }
-  
-  /* .thumbnail-btn => style cho mỗi button thumbnail */
-  .thumbnail-btn {
-    border: none;
-    background: none;
-    cursor: pointer;
-    display: block;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    /* Thêm margin-bottom: 8px nếu muốn cách ảnh */
-  }
-  
-  /* .thumbnail-btn img => style chung cho ảnh thumbnail */
-  .thumbnail-btn img {
-    display: block;
-    border-radius: 4px;
-    /* u-border, u-opacity, v.v. 
-       đã set inline class => có thể override thêm ở đây */
-  }
-  
-  /* .main-col => cột phải (ảnh chính) */
-  .main-col {
-    flex: 1;
-    position: relative; /* cho overlay arrow, etc. */
-  }
-  
-  /* .main-image-container => container chính cho ảnh + overlay */
-  .main-image-container {
-    position: relative;
-    height: 100%;
-  }
-  
-  /* .main-image => ảnh chính */
-  .main-image {
-    display: block;
-    border-radius: 4px;
-    width: 100%;  /* hoặc auto */
-    height: auto;
-    cursor: pointer;
-  }
-  
-  /* .main-image-overlay => layer overlay (mờ) */
-  .main-image-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none;
-    opacity: 0.1;
-    background-position: center;
-    background-size: cover;
-    border-radius: 4px;
-  }
-  
-  /* .navigation-container => chứa nút next/prev (góc dưới phải) */
-  .navigation-container {
-    /* ThredUp style: u-flex u-gap-2x u-right-1x u-bottom-1x u-absolute */
-    right: 8px;
-    bottom: 8px;
-  }
-  
-  /* .ui-button-floating => style cho button arrow, v.v. */
-  .ui-button-floating {
-    border: none;
-    background-color: #ffffff99;
-    border-radius: 9999px;
-    padding: 8px;
-    cursor: pointer;
-    /* v.v. */
-  }
-  .ui-button-floating:hover {
-    background-color: #ffffffcc;
-  }
-  
-  /* .u-top-1x.u-right-1x => shop look, favorite => góc trên phải */
-  .u-top-1x.u-right-1x {
-    top: 8px;
-    right: 8px;
-  }
-  
-  /* .inverted => có thể style icon, background, v.v. */
-  .ui-button-floating.inverted {
-    background-color: #ffffff80;
-  }
-  
-  
+  position: sticky;
+  top: 72px;
+  margin-bottom: 8px; /* u-mb-3xs ~ 8px */
+}
+
+/* .gallery-wrapper => flex layout chia thumbnails + main image */
+.gallery-wrapper {
+  display: flex;
+  gap: 1rem; /* ~16px */
+  justify-content: space-between;
+}
+
+/* .thumbs-col => cột trái, chứa danh sách thumbnail (vertical) */
+.thumbs-col {
+  width: 80px;           /* chiều rộng cột thumbnails */
+  max-height: 600px;     /* giới hạn chiều cao, tuỳ ý */
+  overflow-y: auto;      /* cuộn dọc nếu nhiều ảnh */
+}
+
+/* .thumbnail-btn => style cho mỗi button thumbnail */
+.thumbnail-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: block;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  /* Có thể thêm margin-bottom: 8px nếu muốn cách ảnh */
+}
+
+/* .thumbnail-btn img => style chung cho ảnh thumbnail */
+.thumbnail-btn img {
+  display: block;
+  border-radius: 4px;
+  width: 60px;
+  height: 80px;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+/* Hover effect: khi rê chuột lên thumbnail */
+.thumbnail-btn:hover img {
+  border-color: #ccc !important; /* override border color */
+  opacity: 0.8 !important;
+}
+
+/* .main-col => cột phải (ảnh chính) */
+.main-col {
+  flex: 1;
+  position: relative; /* cho overlay arrow, etc. */
+  max-width: 612px;
+  max-height: 816px;
+}
+
+/* .main-image-container => container chính cho ảnh + overlay */
+.main-image-container {
+  position: relative;
+  height: 100%;
+}
+
+/* .main-image => ảnh chính */
+.main-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  width: 100%;  /* hoặc 612px, tuỳ ý */
+  height: auto;
+  cursor: pointer;
+  .main-image { cursor: inherit; }
+}
+
+.main-image-container:hover .main-image {
+  transform: scale(1.1);
+
+}
+/* .main-image-overlay => layer overlay (mờ 10%) */
+.main-image-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  opacity: 0.1;
+  background-position: center;
+  background-size: cover;
+  border-radius: 4px;
+}
+
+/* Nút next/prev (góc dưới phải) => .navigation-container */
+.navigation-container {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 1; /* nổi trên ảnh */
+}
+
+/* .ui-button-floating => style cho button arrow, shop-similar, v.v. */
+.ui-button-floating {
+  border: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 9999px; /* hình tròn */
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover: thay đổi màu nền */
+.ui-button-floating:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* .ui-button-floating.inverted => tuỳ chỉnh, ví dụ: bo tròn, background mờ hơn */
+.ui-button-floating.inverted {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* top-right => shop-similar, favorite => góc trên phải */
+.u-top-1x.u-right-1x {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+}
+
+/* Active thumbnail => viền đen, opacity=1 */
+.thumbnail-btn.active img {
+  border: 1px solid #000 !important;
+  opacity: 1 !important;
+}

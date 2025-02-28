@@ -1,13 +1,13 @@
 // ProductDetailPage/LeftColumn/ImageThumbnails.js
 
 import React from 'react';
-import FrontView from './Views/01-FrontView.js';
-import BackView from './Views/02-BackView.js';
-import RightView from './Views/03-RightView.js';
-import LeftView from './Views/04-LeftView.js';
-import TopTagView from './Views/05-TopTagView.js';
-import BottomTagView from './Views/06-BottomTagView.js';
-import ThreeDView from './Views/07-ThreeView.js';
+import FrontView from './Views/01-FrontView';
+import BackView from './Views/02-BackView';
+import RightView from './Views/03-RightView';
+import LeftView from './Views/04-LeftView';
+import TopTagView from './Views/05-TopTagView';
+import BottomTagView from './Views/06-BottomTagView';
+import ThreeDView from './Views/07-ThreeView';
 import './ImageThumbnails.css';
 
 /**
@@ -28,12 +28,13 @@ function ImageThumbnails({ images, selectedIndex, onSelect }) {
   }
 
   return (
-    <div className="u-flex u-flex-col u-gap-1x u-overflow-y-auto thumb-list">
+    <div className="thumb-list">
       {images.map((img, idx) => {
         // fallback altText, overlayIcon
         const altText = img.altText || `Thumbnail ${idx + 1}`;
         const overlayIcon = img.overlayIcon || null;
 
+        // vantage point -> component
         switch (img.type) {
           case 'front':
             return (

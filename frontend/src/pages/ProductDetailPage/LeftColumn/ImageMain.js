@@ -36,43 +36,34 @@ function ImageMain({
 
   return (
     <div
-      className="u-relative u-h-full u-isolate main-image-container"
+      className="main-image-container"
       role="button"
       tabIndex="0"
     >
       {/* Ảnh chính */}
       <img
         alt={altText}
-        className="u-rounded-4 u-block u-cursor-pointer main-image"
+        className="main-image"
         src={imageUrl}
-        width="612"
-        height="821"
       />
 
       {/* Overlay background effect (mờ 10%) */}
       <div
-        className="u-rounded-4 main-image-overlay"
+        className="main-image-overlay"
         style={{
-          backgroundImage: `url(${imageUrl})`,
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
-          opacity: 0.1,
-          pointerEvents: 'none',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          backgroundImage: `url(${imageUrl})`
         }}
       />
 
       {/* Nút next/prev (góc dưới phải) */}
-      <ImageNavigation
-        onPrev={onPrev}
-        onNext={onNext}
-        disabledPrev={disabledPrev}
-        disabledNext={disabledNext}
-      />
+      <div className="navigation-container">
+        <ImageNavigation
+          onPrev={onPrev}
+          onNext={onNext}
+          disabledPrev={disabledPrev}
+          disabledNext={disabledNext}
+        />
+      </div>
 
       {/* Shop look + favorite (góc trên phải) */}
       <div className="u-absolute u-top-1x u-right-1x u-flex u-gap-2x">
