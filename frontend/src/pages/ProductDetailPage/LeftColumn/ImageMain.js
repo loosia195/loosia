@@ -6,17 +6,6 @@ import ImageNavigation from './ImageNavigation';
 import ImageFavorite from './ImageFavorite';
 import ImageLook from './ImageLook';
 
-/**
- * Zoomable Image (Advanced):
- * - imageUrl: ảnh xlarge
- * - retinaUrl: ảnh 2x (nếu có)
- * - altText: string => alt cho ảnh
- * - onNext, onPrev => navigation
- * - disabledNext, disabledPrev => logic arrow
- * - onFavorite, favoriteCount => top-right
- * - lookLink => "Shop look"
- */
-
 function ImageMain({
   imageUrl = '',
   retinaUrl = '',        // optional, for better zoom
@@ -29,15 +18,13 @@ function ImageMain({
   favoriteCount,
   lookLink,
 }) {
-  // Zoom states
   const [hovered, setHovered] = useState(false);
+  const [hoveringIcons, setHoveringIcons] = useState(false);
   const [posX, setPosX] = useState(50);
   const [posY, setPosY] = useState(50);
 
-  // Nếu không có ảnh => không hiển thị
   if (!imageUrl) return null;
 
-  // handle mouse events for zoom overlay
   const handleMouseEnter = () => setHovered(true);
   const handleMouseLeave = () => setHovered(false);
 
@@ -48,15 +35,16 @@ function ImageMain({
     const width = rect.width;
     const height = rect.height;
 
-    // convert to background-position
     const px = (x / width) * 100;
     const py = (y / height) * 100;
     setPosX(px);
     setPosY(py);
   };
 
-  // actual retina link to use
-  const overlayUrl = retinaUrl || imageUrl; // fallback
+  const overlayUrl = retinaUrl || imageUrl;
+
+  // Nếu chuột đang hover trên vùng chứa icon => tắt hiệu ứng zoom (opacity=0)
+  const overlayOpacity = (hovered && !hoveringIcons) ? 1 : 0;
 
   return (
     <div
@@ -81,7 +69,7 @@ function ImageMain({
         }}
       />
 
-      {/* Overlay background (zoom) */}
+      {/* Overlay zoom */}
       <div
         style={{
           position: 'absolute',
@@ -96,27 +84,14 @@ function ImageMain({
           backgroundPosition: `${posX}% ${posY}%`,
           borderRadius: '4px',
           transition: 'opacity 0.2s',
-          opacity: hovered ? 1 : 0, // hover => hiện overlay
+          opacity: overlayOpacity,
         }}
       />
 
-      {/* Khi hover => ảnh gốc mờ đi */}
-      {hovered && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            pointerEvents: 'none',
-            backgroundColor: 'transparent',
-            transition: 'opacity 0.2s',
-          }}
-        >
-          {/* Ẩn ảnh gốc => set opacity=0 */}
-        </div>
-      )}
-
-      {/* Nút next/prev (góc dưới phải) */}
+      {/* Các nút và icon - khi hover vào vùng này thì ảnh sẽ trở lại trạng thái bình thường */}
       <div
+        onMouseEnter={() => setHoveringIcons(true)}
+        onMouseLeave={() => setHoveringIcons(false)}
         className="navigation-container"
         style={{
           position: 'absolute',
@@ -135,8 +110,9 @@ function ImageMain({
         />
       </div>
 
-      {/* Shop look + favorite (góc trên phải) */}
       <div
+        onMouseEnter={() => setHoveringIcons(true)}
+        onMouseLeave={() => setHoveringIcons(false)}
         className="u-absolute u-top-1x u-right-1x u-flex u-gap-2x"
         style={{
           position: 'absolute',
@@ -147,7 +123,7 @@ function ImageMain({
           zIndex: 1,
         }}
       >
-        <ImageLook href={lookLink} label="Shop look" />
+        <ImageLook href={lookLink} />
         <ImageFavorite
           favoriteCount={favoriteCount}
           onClick={onFavorite}

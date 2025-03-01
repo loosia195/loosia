@@ -9,11 +9,18 @@ import React from 'react';
  */
 
 function ImageFavorite({ favoriteCount = 24, onClick }) {
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
   return (
     <button
       className="ui-button-floating inverted"
       type="button"
       onClick={onClick}
+      onMouseEnter={stopPropagation}
+      onMouseMove={stopPropagation}
+      onMouseLeave={stopPropagation}
     >
       <span className="body-copy-sm-bold u-mr-1xs">
         {favoriteCount}
@@ -29,3 +36,4 @@ function ImageFavorite({ favoriteCount = 24, onClick }) {
 }
 
 export default ImageFavorite;
+
