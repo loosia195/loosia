@@ -1,0 +1,65 @@
+/* ImageMain.module.scss */
+
+@import '../../../styles/mixins';
+@import '../../../styles/variables';
+
+/* Container bao ảnh chính */
+.mainImageContainer {
+  position: relative;
+  width: 100%;
+  cursor: zoom-in;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Ảnh gốc (chưa zoom) */
+.mainImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+}
+
+/* Overlay zoom hiển thị khi hovered */
+.zoomOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 200%; /* phóng to 2x */
+  border-radius: 4px;
+  transition: opacity 0.2s;
+}
+
+/* Lớp mờ khi hovered (nếu cần mờ ảnh gốc) */
+.hoverMask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: transparent;
+  transition: opacity 0.2s;
+}
+
+/* Container nút next/prev (góc dưới phải) */
+.navigationContainer {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+}
+
+/* Container “Shop look” + “Favorite” (góc trên phải) */
+.topRightContainer {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+}

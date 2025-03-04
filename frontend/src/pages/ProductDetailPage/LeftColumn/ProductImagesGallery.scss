@@ -1,0 +1,71 @@
+/* File: src/pages/ProductDetailPage/ProductImagesGallery.scss */
+
+/* Container chính (968×816), sticky top 72px, dịch phải 120px */
+.product-images-gallery {
+  position: sticky;
+  top: 72px;
+  width: 968px;       /* tổng chiều ngang */
+  height: 816px;      /* tổng chiều cao */
+  margin-left: 120px; /* dịch toàn bộ khối sang phải 120px */
+  margin-bottom: 8px; 
+  overflow: hidden;   /* tránh tràn */
+  background-color: #fff; /* debug color, tuỳ ý */
+}
+
+/* .gallery-wrapper => flex: cột trái (thumbnails) + main image */
+.gallery-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  /* không dùng gap do có margin left/right .main-col */
+}
+
+/* .thumbs-col => cột trái, 60×816 */
+.thumbs-col {
+  width: 60px;
+  height: 816px;
+  overflow-y: auto;  /* cuộn dọc nếu nhiều ảnh */
+  flex-shrink: 0;
+}
+
+/* .main-col => main area 612×816, margin-left 148px, margin-right 148px */
+.main-col {
+  position: relative;
+  width: 612px;
+  height: 816px;
+  margin-left: 148px;
+  margin-right: 148px;
+  flex-shrink: 0;
+}
+
+/* .thumbnail-btn => style chung cho button thumbnail */
+.thumbnail-btn {
+  border: none;
+  background: none;
+  display: block;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  cursor: default;
+}
+
+/* .thumbnail-btn img => style chung cho ảnh thumbnail */
+.thumbnail-btn img {
+  display: block;
+  border-radius: 4px;
+  width: 60px;
+  height: 8%;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+/* Hover effect thumbnail => border/opacity */
+.thumbnail-btn:hover img {
+  border-color: #ccc !important;
+  opacity: 0.8 !important;
+}
+
+/* Active thumbnail => viền đen, opacity=1 */
+.thumbnail-btn.active img {
+  border: 1px solid #000 !important;
+  opacity: 1 !important;
+}

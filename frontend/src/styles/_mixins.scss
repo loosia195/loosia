@@ -1,0 +1,66 @@
+/* _mixins.scss */
+@import 'variables';
+
+/* ----------------------
+   1) Mixin center-flex
+----------------------- */
+@mixin center-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ----------------------
+   2) Mixin icon-size
+   - Dùng cho icon responsive: (small-size, medium-size)
+----------------------- */
+@mixin icon-size($small-size, $medium-size) {
+  width: $small-size;
+  height: $small-size;
+
+  @media (min-width: $bp-md) {
+    width: $medium-size;
+    height: $medium-size;
+  }
+}
+
+/* ----------------------
+   3) Mixin responsive-img
+----------------------- */
+@mixin responsive-img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ----------------------
+   4) Mixin min-width
+----------------------- */
+@mixin min-width($value) {
+  min-width: $value;
+}
+
+/* ----------------------
+   5) Mixin for text-ellipsis
+----------------------- */
+@mixin text-ellipsis($width: 100%) {
+  width: $width;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ----------------------
+   6) Mixin for breakpoint usage
+   - Ví dụ: @include respond-to(md) { ... }
+----------------------- */
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $bp-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (min-width: $bp-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (min-width: $bp-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (min-width: $bp-xl) { @content; }
+  }
+}

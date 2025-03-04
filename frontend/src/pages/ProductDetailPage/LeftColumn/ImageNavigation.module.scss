@@ -1,0 +1,61 @@
+/* ImageNavigation.module.scss */
+@import '../../../styles/mixins';
+@import '../../../styles/variables';
+
+.navigationContainer {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+}
+
+.navButton {
+  background-color: $color-white;  
+  color: $color-black;
+  border-radius: 44px;
+  box-shadow: 0 2px 8px #0000001a;
+  width: 44px;
+  height: 44px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: $font-main;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  border: none;
+  cursor: pointer;
+
+  transition: transform 0.2s ease-out;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.05);
+  }
+
+  @media (min-width: $bp-md) {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  /* Khi disabled => nền xám + mờ icon */
+  &:disabled {
+    background-color: #eee;    /* màu xám nhạt */
+    transform: none;
+
+    /* Giảm độ rõ icon */
+    .navIcon {
+      opacity: 0.5;            /* hoặc 0.4, tuỳ ý */
+      /* Hoặc filter: grayscale(100%); nếu muốn chuyển trắng đen */
+    }
+  }
+}
+
+/* Icon mũi tên => responsive 20px -> 24px */
+.navIcon {
+  @include icon-size(20px, 24px);
+  @include responsive-img; 
+}

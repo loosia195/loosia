@@ -1,39 +1,35 @@
-// ProductDetailPage/LeftColumn/ImageFavorite.js
+import React, { useState } from 'react';
+import styles from './ImageFavorite.module.scss';
 
-import React from 'react';
+function ImageFavorite() {
+  // Ban đầu = 0 => không hiển thị text
+  const [favoriteCount, setFavoriteCount] = useState(0);
 
-/**
- * Props:
- *  - favoriteCount (number): số lượt yêu thích (VD: 24)
- *  - onClick(): callback khi user bấm nút yêu thích
- */
-
-function ImageFavorite({ favoriteCount = 24, onClick }) {
-  const stopPropagation = (e) => {
-    e.stopPropagation();
+  // Khi bấm, tăng số đếm
+  const handleClick = (e) => {
+    e.stopPropagation(); // Ngăn sự kiện lan lên parent (zoom)
+    setFavoriteCount((prev) => prev + 1);
   };
 
   return (
     <button
-      className="ui-button-floating inverted"
       type="button"
-      onClick={onClick}
-      onMouseEnter={stopPropagation}
-      onMouseMove={stopPropagation}
-      onMouseLeave={stopPropagation}
+      onClick={handleClick}
+      className={styles.favoriteButton}
     >
-      <span className="body-copy-sm-bold u-mr-1xs">
-        {favoriteCount}
-      </span>
+      {/* Chỉ render span nếu favoriteCount > 0, hoặc luôn render nếu muốn hiển thị 0 */}
+      {favoriteCount > 0 && (
+        <span className={styles.favoriteCount}>
+          {favoriteCount}
+        </span>
+      )}
       <img
         alt="favorite"
         src="/tup-assets/pwa/production/assets/heart-outline.svg"
-        width="16"
-        height="16"
+        className={styles.icon}
       />
     </button>
   );
 }
 
 export default ImageFavorite;
-

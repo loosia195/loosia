@@ -1,0 +1,46 @@
+/* _variables.scss */
+
+/* ----------------------
+   1) Màu sắc (Colors)
+----------------------- */
+$color-black: #000;
+$color-white: #fff;
+$color-dark: #333;
+$color-light: #f8f8f8;
+
+$color-primary: #3498db;   /* xanh lam */
+$color-secondary: #9c27b0; /* tím */
+$color-success: #8dc572;
+$color-error: #be6464;
+
+/* ----------------------
+   2) Font
+----------------------- */
+/* ThredUp dùng Graphik, anh có thể import qua @font-face hoặc link external
+   Dưới đây chỉ là ví dụ placeholder. */
+$font-main: 'Graphik', sans-serif;
+
+/* ----------------------
+   3) Kích thước
+----------------------- */
+$font-size-base: 14px;
+$font-size-sm: 12px;
+$font-size-lg: 16px;
+
+/* ----------------------
+   4) Breakpoints
+----------------------- */
+$bp-sm: 576px;
+$bp-md: 768px;  /* ThredUp hay tailwind md ~768px */
+$bp-lg: 1024px;
+$bp-xl: 1200px;
+
+/* ----------------------
+   5) Khác (Spacing, Radius, etc.)
+----------------------- */
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+
+$border-radius-md: 6px;
+$border-radius-full: 9999px;

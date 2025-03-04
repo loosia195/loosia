@@ -1,14 +1,13 @@
-// ProductDetailPage/LeftColumn/ImageMain.js
-// Thay thế logic cũ bằng ZoomableImage (zoom advanced)
-
 import React, { useState } from 'react';
+import styles from './ImageMain.module.scss';
+
 import ImageNavigation from './ImageNavigation';
 import ImageFavorite from './ImageFavorite';
 import ImageLook from './ImageLook';
 
 function ImageMain({
   imageUrl = '',
-  retinaUrl = '',        // optional, for better zoom
+  retinaUrl = '',
   altText = 'Main product image',
   onNext,
   onPrev,
@@ -19,13 +18,16 @@ function ImageMain({
   lookLink,
 }) {
   const [hovered, setHovered] = useState(false);
-  const [hoveringIcons, setHoveringIcons] = useState(false);
   const [posX, setPosX] = useState(50);
   const [posY, setPosY] = useState(50);
 
   if (!imageUrl) return null;
 
+  const overlayUrl = retinaUrl || imageUrl;
+
+  // Bật zoom khi chuột vào vùng ảnh
   const handleMouseEnter = () => setHovered(true);
+  // Tắt zoom khi chuột rời vùng ảnh
   const handleMouseLeave = () => setHovered(false);
 
   const handleMouseMove = (e) => {
@@ -41,15 +43,17 @@ function ImageMain({
     setPosY(py);
   };
 
-  const overlayUrl = retinaUrl || imageUrl;
-
-  // Nếu chuột đang hover trên vùng chứa icon => tắt hiệu ứng zoom (opacity=0)
-  const overlayOpacity = (hovered && !hoveringIcons) ? 1 : 0;
+  // Hàm chặn zoom khi chuột vào vùng icon
+  const handleIconMouseEnter = (e) => {
+    e.stopPropagation();
+    setHovered(false); // tắt zoom ngay
+  };
+  const handleIconMouseMove = (e) => e.stopPropagation();
+  const handleIconMouseLeave = (e) => e.stopPropagation();
 
   return (
     <div
-      className="main-image-container"
-      style={{ position: 'relative', width: '100%', cursor: 'zoom-in' }}
+      className={styles.mainImageContainer}
       role="button"
       tabIndex="0"
       onMouseEnter={handleMouseEnter}
@@ -60,47 +64,30 @@ function ImageMain({
       <img
         alt={altText}
         src={imageUrl}
-        style={{
-          display: 'block',
-          width: '100%',
-          height: 'auto',
-          borderRadius: '4px',
-          transition: 'opacity 0.2s',
-        }}
+        className={styles.mainImage}
       />
 
       {/* Overlay zoom */}
       <div
+        className={styles.zoomOverlay}
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          pointerEvents: 'none',
           backgroundImage: `url(${overlayUrl})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: '200%', // phóng to 2x
+          backgroundSize: '200%', 
           backgroundPosition: `${posX}% ${posY}%`,
-          borderRadius: '4px',
-          transition: 'opacity 0.2s',
-          opacity: overlayOpacity,
+          opacity: hovered ? 1 : 0,
         }}
       />
 
-      {/* Các nút và icon - khi hover vào vùng này thì ảnh sẽ trở lại trạng thái bình thường */}
+      {hovered && (
+        <div className={styles.hoverMask} />
+      )}
+
+      {/* Nút next/prev (góc dưới phải) */}
       <div
-        onMouseEnter={() => setHoveringIcons(true)}
-        onMouseLeave={() => setHoveringIcons(false)}
-        className="navigation-container"
-        style={{
-          position: 'absolute',
-          right: '8px',
-          bottom: '8px',
-          display: 'flex',
-          gap: '8px',
-          zIndex: 1,
-        }}
+        className={styles.navigationContainer}
+        onMouseEnter={handleIconMouseEnter}
+        onMouseMove={handleIconMouseMove}
+        onMouseLeave={handleIconMouseLeave}
       >
         <ImageNavigation
           onPrev={onPrev}
@@ -110,18 +97,12 @@ function ImageMain({
         />
       </div>
 
+      {/* Shop look + favorite (góc trên phải) */}
       <div
-        onMouseEnter={() => setHoveringIcons(true)}
-        onMouseLeave={() => setHoveringIcons(false)}
-        className="u-absolute u-top-1x u-right-1x u-flex u-gap-2x"
-        style={{
-          position: 'absolute',
-          top: '8px',
-          right: '8px',
-          display: 'flex',
-          gap: '8px',
-          zIndex: 1,
-        }}
+        className={styles.topRightContainer}
+        onMouseEnter={handleIconMouseEnter}
+        onMouseMove={handleIconMouseMove}
+        onMouseLeave={handleIconMouseLeave}
       >
         <ImageLook href={lookLink} />
         <ImageFavorite

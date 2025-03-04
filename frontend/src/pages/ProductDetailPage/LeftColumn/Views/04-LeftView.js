@@ -1,9 +1,12 @@
 // ProductDetailPage/LeftColumn/Thumbnails/04-LeftView.js
 import React from 'react';
+import styles from '../ImageThumbnails.module.scss'; 
+// Import SCSS module
 
 /**
  * Props:
  *  - onClick: function => click thumbnail
+ *  - onMouseEnter: function => hover thumbnail
  *  - isActive: boolean => highlight
  *  - thumbUrl: string => link ảnh
  *  - altText: string => default "Left view image"
@@ -18,35 +21,39 @@ function LeftView({
   altText = 'Left view image',
   overlayIcon,
 }) {
-  const imgClass = isActive
-    ? 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-black u-opacity-100'
-    : 'u-block u-border u-border-solid u-rounded-4 u-overflow-hidden u-border-transparent u-opacity-60';
-
   if (!thumbUrl) {
     return null;
   }
+
+  // Gộp class thumbnailBtn + active (nếu isActive)
+  const buttonClass = isActive
+    ? `${styles.thumbnailBtn} ${styles.active}`
+    : styles.thumbnailBtn;
 
   return (
     <button
       type="button"
       aria-label={altText}
-      className={`thumbnail-btn ${isActive ? 'active' : ''} u-cursor-default`}
+      className={buttonClass}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
     >
       <img
         alt={altText}
-        className={imgClass}
         src={thumbUrl}
         width="60"
         height="80"
+        className={styles.thumbnailImg}
       />
+
       {overlayIcon && (
-        <div
-          className="u-absolute u-left-1/2 u-top-1/2 u-rounded-full u-object-contain"
-          style={{ backgroundColor: '#FFFFFF80', padding: '6px', transform: 'translate(-50%, -50%)' }}
-        >
-          <img alt="overlay icon" className="u-block" src={overlayIcon} width="24" height="24" />
+        <div className={styles.overlayIconContainer}>
+          <img
+            alt="overlay icon"
+            src={overlayIcon}
+            width="24"
+            height="24"
+          />
         </div>
       )}
     </button>

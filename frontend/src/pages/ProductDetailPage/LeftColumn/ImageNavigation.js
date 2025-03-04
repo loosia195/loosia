@@ -1,45 +1,62 @@
-// ProductDetailPage/LeftColumn/ImageNavigation.js
+// File: src/pages/ProductDetailPage/LeftColumn/ImageNavigation.js
 
 import React from 'react';
+import styles from './ImageNavigation.module.scss';
 
 function ImageNavigation({ onPrev, onNext, disabledPrev, disabledNext }) {
-  // Chặn sự kiện chuột lan truyền để tránh kích hoạt hiệu ứng zoom ở ImageMain
+  // Ngăn sự kiện chuột lan truyền (tránh zoom, xoay 3D,...)
   const stopPropagation = (e) => {
     e.stopPropagation();
   };
 
+  // Đường dẫn icon
+  const arrowLeftSrc = "/tup-assets/pwa/production/assets/arrow-left.svg";
+  const arrowRightSrc = "/tup-assets/pwa/production/assets/arrow-right.svg";
+
+  // Hàm click Prev
+  const handlePrevClick = (e) => {
+    e.stopPropagation();
+    if (onPrev) onPrev();
+  };
+
+  // Hàm click Next
+  const handleNextClick = (e) => {
+    e.stopPropagation();
+    if (onNext) onNext();
+  };
+
   return (
     <div
-      className="u-flex u-gap-2x u-right-1x u-bottom-1x u-absolute navigation-container"
+      className={styles.navigationContainer}
       onMouseEnter={stopPropagation}
       onMouseMove={stopPropagation}
       onMouseLeave={stopPropagation}
     >
+      {/* Nút Prev */}
       <button
-        className="ui-button-floating inverted"
         type="button"
-        onClick={onPrev}
+        onClick={handlePrevClick}
         disabled={disabledPrev}
+        className={styles.navButton}
       >
         <img
           alt="arrow previous"
-          src={process.env.PUBLIC_URL + "/tup-assets/pwa/production/assets/arrow-left.svg"}
-          width="20"
-          height="20"
+          src={arrowLeftSrc}
+          className={styles.navIcon}
         />
       </button>
 
+      {/* Nút Next */}
       <button
-        className="ui-button-floating inverted"
         type="button"
-        onClick={onNext}
+        onClick={handleNextClick}
         disabled={disabledNext}
+        className={styles.navButton}
       >
         <img
           alt="arrow next"
-          src={process.env.PUBLIC_URL + "/tup-assets/pwa/production/assets/arrow-right.svg"}
-          width="20"
-          height="20"
+          src={arrowRightSrc}
+          className={styles.navIcon}
         />
       </button>
     </div>

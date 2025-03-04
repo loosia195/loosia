@@ -1,0 +1,58 @@
+/* _utilities.scss */
+@import 'variables';
+
+/* ----------------------
+   Utility classes
+   Tương tự Tailwind, ThredUp
+----------------------- */
+
+/* 1) Display, Flex */
+.u-flex {
+  display: flex;
+}
+.u-inline-flex {
+  display: inline-flex;
+}
+
+/* 2) Gap, Margin, Padding (ví dụ) */
+.u-gap-md {
+  gap: $spacing-md; /* 16px */
+}
+.u-mt-md {
+  margin-top: $spacing-md;
+}
+.u-pt-md {
+  padding-top: $spacing-md;
+}
+
+/* 3) Color, Background */
+.u-color-white {
+  color: $color-white;
+}
+.u-bg-black {
+  background-color: $color-black;
+}
+
+/* 4) Responsive utility
+   .md\:u-w-3x => width 24px khi >= $bp-md
+*/
+.u-w-3xs {
+  width: 20px;
+  height: 20px;
+}
+@media (min-width: $bp-md) {
+  .md\:u-w-3x {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* 5) Border radius */
+.u-rounded-full {
+  border-radius: $border-radius-full;
+}
+
+/* 6) Box shadow (vd) */
+.u-shadow-sm {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

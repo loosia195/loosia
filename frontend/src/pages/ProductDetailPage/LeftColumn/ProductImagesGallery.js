@@ -1,20 +1,13 @@
-// ProductDetailPage/LeftColumn/ProductImagesGallery.js
+// File: src/pages/ProductDetailPage/ProductImagesGallery.js
 
 import React, { useState } from 'react';
 import ImageThumbnails from './ImageThumbnails';
 import ImageMain from './ImageMain';
-import './ProductImagesGallery.css';
-
-/**
- * Mảng `images` => array of string (VD: [ "http://.../img1.jpg", "http://.../img2.jpg" ])
- * HOẶC => array of objects { type, thumbUrl, ... } => tuỳ DB
- * 
- * selectedIndex => state => main image
- * vantagePoints => cứng: [ front, back, right, left, topTag, bottomTag, 3d ]
- */
+import Image360 from './Image360';
+import './ProductImagesGallery.scss';
 
 function ProductImagesGallery({ images, stickyTop = 72 }) {
-  // 1) Tạo vantagePoints cứng (nếu DB chỉ trả array string)
+  // Vantage points => 7 "views": front, back, right, left, topTag, bottomTag, 3d
   const vantagePoints = [
     { type: 'front' },
     { type: 'back' },
@@ -25,24 +18,19 @@ function ProductImagesGallery({ images, stickyTop = 72 }) {
     { type: '3d' },
   ];
 
-  // 2) Gộp vantagePoints + images => vantageImages
-  //    Mỗi vantage point => vantageImages[i] = { type, thumbUrl: images[i] }
+  // Map vantage => vantageImages
   const vantageImages = vantagePoints.map((vp, idx) => {
-    // images[idx] có thể undefined => fallback ''
     const url = images[idx] || '';
     return {
       ...vp,
       thumbUrl: url,
       altText: `${vp.type} view image`,
-      // overlayIcon: ... // if needed
     };
   });
 
-  // 3) selectedIndex => hiển thị vantageImages[selectedIndex]
   const [selectedIndex, setSelectedIndex] = useState(0);
   const currentImageObj = vantageImages[selectedIndex] || {};
 
-  // Next/Prev
   const handleNext = () => {
     if (selectedIndex < vantageImages.length - 1) {
       setSelectedIndex(selectedIndex + 1);
@@ -57,9 +45,7 @@ function ProductImagesGallery({ images, stickyTop = 72 }) {
   const disabledNext = (selectedIndex === vantageImages.length - 1);
   const disabledPrev = (selectedIndex === 0);
 
-  // 4) imageUrl => main image
-  // vantage points code => `thumbUrl` or `urlLarge`
-  const imageUrl = currentImageObj.thumbUrl || '';
+  const vantageType = currentImageObj.type || '';
 
   return (
     <div
@@ -67,27 +53,43 @@ function ProductImagesGallery({ images, stickyTop = 72 }) {
       style={{ position: 'sticky', top: stickyTop }}
     >
       <div className="gallery-wrapper">
-        {/* Bên trái: Thumbnails (vertical) */}
         <div className="thumbs-col">
           <ImageThumbnails
-            images={vantageImages}       // array of objects
+            images={vantageImages}
             selectedIndex={selectedIndex}
             onSelect={(idx) => setSelectedIndex(idx)}
           />
         </div>
 
-        {/* Bên phải: Main Image */}
         <div className="main-col">
-          <ImageMain
-            imageUrl={imageUrl}
-            onNext={handleNext}
-            onPrev={handlePrev}
-            disabledNext={disabledNext}
-            disabledPrev={disabledPrev}
-            onFavorite={() => alert('Favorited!')}
-            favoriteCount={24}
-            lookLink="/look"
-          />
+          {vantageType === '3d' ? (
+            <Image360
+              // Sử dụng sprite 3D (ảnh thứ 7, index=6)
+              imageUrl={images[6] || ''}
+              // 26 frames, 768×1024 => khớp với sprite 19968×1024
+              totalFrames={26}
+              frameWidth={768}
+              frameHeight={1024}
+              onNext={handleNext}
+              onPrev={handlePrev}
+              disabledNext={disabledNext}
+              disabledPrev={disabledPrev}
+              onFavorite={() => alert('Favorited!')}
+              favoriteCount={24}
+              lookLink="/look"
+            />
+          ) : (
+            <ImageMain
+              imageUrl={currentImageObj.thumbUrl || ''}
+              onNext={handleNext}
+              onPrev={handlePrev}
+              disabledNext={disabledNext}
+              disabledPrev={disabledPrev}
+              onFavorite={() => alert('Favorited!')}
+              favoriteCount={24}
+              lookLink="/look"
+            />
+          )}
         </div>
       </div>
     </div>

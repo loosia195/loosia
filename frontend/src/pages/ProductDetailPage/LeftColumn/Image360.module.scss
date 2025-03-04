@@ -1,0 +1,51 @@
+/* File: src/pages/ProductDetailPage/LeftColumn/Image360.module.scss */
+
+/* Bao quanh sprite 3D */
+.spriteContainer {
+  /* Tùy ý - có thể để width: auto; height: auto;
+     hoặc gắn width/height cho .spriteContainer
+     nếu muốn wrapper cứng chắc. */
+  border: 0px solid #ddd;  /* Test border để dễ thấy */
+  display: inline-block;    /* Hoặc block tuỳ ý */
+}
+
+/* Bên trong là chính khung sprite 3D */
+.sprite3D {
+  /* 
+    width, height sẽ set inline style (React)
+    backgroundImage, backgroundPosition cũng set inline 
+  */
+  transition: background-position 0s;
+}
+
+/* Góc dưới phải => next/prev vantage */
+.navigationContainer {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+}
+
+/* Góc trên phải => favorite + shop look */
+.topRightContainer {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+}
+
+.dragLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 25px;
+  padding: 10px 17px;
+  pointer-events: none; // để người dùng vẫn drag được ảnh
+  // Có thể thêm transition fade in/out nếu cần
+}

@@ -1,7 +1,10 @@
 // src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+
+// Thay vì import './index.css', ta import file SCSS tổng hợp
+import './styles/index.scss';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

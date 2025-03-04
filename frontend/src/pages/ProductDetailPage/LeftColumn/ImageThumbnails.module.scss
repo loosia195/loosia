@@ -1,0 +1,57 @@
+/* File: src/pages/ProductDetailPage/LeftColumn/ImageThumbnails.module.scss */
+
+/* Danh sách thumbnail (vertical) */
+.thumbList {
+  display: flex;
+  flex-direction: column;
+  row-gap: 7.15px; /* Khoảng cách 7px giữa các thumbnail */
+}
+
+/* Button bọc thumbnail */
+.thumbnailBtn {
+  border: none;
+  background: none;
+  display: block;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  cursor: default; /* Nếu không muốn hình bàn tay khi hover */
+
+  /* Hover => highlight ảnh */
+  &:hover img {
+    border-color: #ccc !important;
+    opacity: 0.8 !important;
+  }
+
+  /* Khi active => viền đen, opacity=1 */
+  &.active img {
+    border: 1px solid #000 !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Ảnh thumbnail */
+.thumbnailImg {
+  display: block;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  width: 60px;
+  height: 80px;
+  opacity: 0.6;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+/* Overlay icon container (nếu vantage code dùng overlayIcon) */
+.overlayIconContainer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 6px;
+  border-radius: 9999px;
+
+  img {
+    display: block;
+  }
+}

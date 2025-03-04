@@ -1,0 +1,56 @@
+/* _global.scss */
+@import 'variables';
+
+/* ----------------------
+   1) Reset / Normalize
+----------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ----------------------
+   2) Base styles for html, body
+----------------------- */
+html, body {
+  font-family: $font-main;
+  font-size: $font-size-base;   /* 14px */
+  line-height: 1.4;
+  color: $color-dark;
+  background-color: $color-white;
+}
+
+/* 3) Tweak for headings, paragraphs */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 700;
+}
+p {
+  margin: 0 0 $spacing-md 0;
+}
+a {
+  color: $color-primary;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* 4) Img responsive (nếu muốn global) */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 5) Buttons */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* 6) v.v. ... anh có thể mở rộng thêm */

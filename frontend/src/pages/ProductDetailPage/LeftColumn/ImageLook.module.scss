@@ -1,0 +1,57 @@
+/* ImageLook.module.scss */
+
+@import '../../../styles/mixins';
+@import '../../../styles/variables';
+
+/* Nút link “Look” mô phỏng .ui-button-floating.inverted */
+.lookButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Nền trắng, chữ đen */
+  background-color: $color-white;
+  color: $color-black;
+
+  /* Bo tròn lớn (44px), đổ bóng nhẹ */
+  border-radius: 44px;
+  box-shadow: 0 2px 8px #0000001a;
+
+  /* Font */
+  font-family: $font-main;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+
+  /* Kích thước tối thiểu 44×44 để tròn khi chỉ có icon */
+  min-width: 44px;
+  height: 44px;
+
+  /* Khoảng đệm ngang */
+  padding: 0 12px;
+
+  /* Link => bỏ gạch chân, dùng pointer */
+  text-decoration: none;
+  cursor: pointer;
+
+  /* Hiệu ứng hover */
+  transition: transform 0.2s ease-out;
+  white-space: nowrap;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  /* Ở màn hình >= $bp-md, tăng font-size */
+  @media (min-width: $bp-md) {
+    font-size: 14px;
+    line-height: 22px;
+  }
+}
+
+/* Icon “shop-similar” */
+.icon {
+  /* 20×20 ở mobile, 24×24 khi >= $bp-md */
+  @include icon-size(20px, 24px);
+  @include responsive-img;
+}

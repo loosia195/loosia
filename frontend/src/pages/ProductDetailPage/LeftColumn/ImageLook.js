@@ -1,6 +1,7 @@
-// ProductDetailPage/LeftColumn/ImageLook.js
+// File: src/pages/ProductDetailPage/LeftColumn/ImageLook.js
 
 import React from 'react';
+import styles from './ImageLook.module.scss';
 
 function ImageLook({ href = '/look' }) {
   const stopPropagation = (e) => {
@@ -9,19 +10,18 @@ function ImageLook({ href = '/look' }) {
 
   return (
     <a
-      className="u-flex u-overflow-hidden ui-button-floating inverted u-space-x-1x"
       href={href}
       target="_blank"
       rel="noopener noreferrer"
       onMouseEnter={stopPropagation}
       onMouseMove={stopPropagation}
       onMouseLeave={stopPropagation}
+      className={styles.lookButton}
     >
       <img
-        alt=""
+        alt="Shop similar icon"
         src="/tup-assets/pwa/production/assets/shop-similar.svg"
-        width="24"
-        height="24"
+        className={styles.icon}
       />
     </a>
   );

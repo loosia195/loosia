@@ -1,0 +1,62 @@
+/* File: src/pages/ProductDetailPage/LeftColumn/ImageFavorite.module.scss */
+
+@import '../../../styles/mixins';
+@import '../../../styles/variables'; 
+
+.favoriteButton {
+  display: inline-flex;  /* inline-flex để auto-fit theo nội dung */
+  align-items: center;
+  justify-content: center;
+
+  /* Màu nền trắng, chữ đen (giống .ui-button-floating.inverted) */
+  background-color: $color-white;
+  color: $color-black;
+
+  /* Bo tròn lớn */
+  border-radius: 44px;
+
+  /* Đổ bóng nhẹ */
+  box-shadow: 0 2px 8px #0000001a;
+
+  /* Font */
+  font-family: $font-main;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+
+  /* Đặt chiều cao, chiều rộng tối thiểu để thành vòng tròn khi chưa có text */
+  min-width: 44px;
+  height: 44px;
+
+  /* Padding ngang, dọc để icon có khoảng trống */
+  padding: 0 12px;
+
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease-out;
+  white-space: nowrap;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  /* Ở màn hình >= $bp-md, tăng font-size */
+  @media (min-width: $bp-md) {
+    font-size: 14px;
+    line-height: 22px;
+  }
+}
+
+/* Text hiển thị số đếm */
+.favoriteCount {
+  margin-right: 4px;
+  /* Nếu anh muốn ẩn hẳn khi = 0 (không render), 
+     có thể handle logic ở JS thay vì CSS */
+}
+
+/* Icon trái tim */
+.icon {
+  /* 20×20 ở mobile, 24×24 khi >= $bp-md */
+  @include icon-size(20px, 24px);
+  @include responsive-img;
+}
